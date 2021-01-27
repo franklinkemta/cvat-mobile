@@ -16,7 +16,7 @@ export const CarouselItem = (props: CarouselItemProps): React.ReactElement => {
   const {url, metas, index, parallaxProps} = props;
   return (
     <TouchableRipple
-      rippleColor={theme.colors.rippleColor}
+      rippleColor={theme.colors.ripple}
       onPress={() => (props.onTap ? props.onTap(index) : undefined)}>
       <View style={{...props.itemStyles}}>
         <ParallaxImage

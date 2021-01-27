@@ -10,17 +10,17 @@ import {AppNavigator} from './navigation/app.navigator';
 
 import {theme} from '/theme';
 
-export default (): React.ReactFragment => {
+export default (props: any): React.ReactFragment => {
   // This value is used to determine the initial screen
   const isAuthorized: boolean = true;
 
   return (
-    <SafeAreaProvider>
-      <PaperProvider theme={theme}>
+    <PaperProvider {...props} theme={theme}>
+      <SafeAreaProvider>
         <NavigationContainer>
           <AppNavigator />
         </NavigationContainer>
-      </PaperProvider>
-    </SafeAreaProvider>
+      </SafeAreaProvider>
+    </PaperProvider>
   );
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import {Image, Modal, ScrollView, View} from 'react-native';
+
 import {
   useTheme,
   Paragraph,
@@ -7,17 +8,12 @@ import {
   TextInput,
   Button,
   ToggleButton,
-  Text,
-  Appbar,
-  TouchableRipple,
   Portal,
 } from 'react-native-paper';
 
 import {Picker} from '@react-native-picker/picker';
 // import our custom preview grid package
 import PreviewGrid from 'react-native-preview-images';
-
-import ImageViewer from 'react-native-image-zoom-viewer';
 
 // import vectors icons for tabs
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -53,6 +49,7 @@ import {
   vehicleIdentifiers,
 } from '/data';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {Canvas} from '../../components/Canvas';
 
 // Todo: Move this to app global config
 const MAX_TASK_PHOTOS_DEFAULT = 20;
@@ -71,19 +68,29 @@ interface TaskFormState extends Task {
   scrolling?: boolean;
   scrollIsTop?: boolean;
   listImageIndex?: number;
-  imgViewModal?: boolean;
+  annotationCanvasModal?: boolean;
+  annotationPalette?: boolean;
 }
+
+/*
+const AnnotationPalette = () => {
+
+}
+*/
 
 export class TaskCreate extends React.Component<
   TaskCreateProps,
   TaskFormState
 > {
+  previewGridRef: any;
+  imgViewerRef: any;
+
   state = {
     showFAB: true,
     scrolling: false,
     scrollIsTop: true,
     listImageIndex: 0,
-    imgViewModal: false,
+    annotationCanvasModal: false,
     id: idFromUuid(), // Generate unique ID for the task
     author: {
       id: idFromUuid(),
@@ -101,11 +108,70 @@ export class TaskCreate extends React.Component<
       vehicleReferenceNumber: undefined,
       vehicleCleanliness: undefined,
     },
-    images: [],
+    images: [
+      /*
+      {
+        metas: {name: 'Image 1'},
+        annotations: [
+          {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
+          {
+            customAnnotationTypeName: 'FENDER BACK LEFT',
+            labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
+          },
+        ],
+        url: 'https://source.unsplash.com/1600x900/?bus,travel',
+      },
+      {
+        metas: {name: 'Image 1'},
+        annotations: [
+          {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
+          {
+            customAnnotationTypeName: 'FENDER BACK LEFT',
+            labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
+          },
+        ],
+        url: 'https://source.unsplash.com/1600x900/?bus,travel',
+      },
+      {
+        metas: {name: 'Image 1'},
+        annotations: [
+          {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
+          {
+            customAnnotationTypeName: 'FENDER BACK LEFT',
+            labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
+          },
+        ],
+        url: 'https://source.unsplash.com/1600x900/?bus,travel',
+      },
+      {
+        metas: {name: 'Image 1'},
+        annotations: [
+          {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
+          {
+            customAnnotationTypeName: 'FENDER BACK LEFT',
+            labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
+          },
+        ],
+        url: 'https://source.unsplash.com/1600x900/?bus,travel',
+      },
+      {
+        metas: {name: 'Image 1'},
+        annotations: [
+          {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
+          {
+            customAnnotationTypeName: 'FENDER BACK LEFT',
+            labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
+          },
+        ],
+        url: 'https://source.unsplash.com/1600x900/?bus,travel',
+      },
+      */
+    ],
   };
 
   constructor(props: TaskCreateProps) {
     super(props);
+    // this.previewGridRef = React.useRef<PreviewGrid>(null);
     // note that we only bind when we dont define our handle function as arrow function like this taskFunc = () =>
   }
 
@@ -121,13 +187,16 @@ export class TaskCreate extends React.Component<
     // prevProps: any
     // todo define the Props types for this component, with optional param takenPhoto?
     const routeParams = this.props.route.params;
-    const takenPhotos: CameraImage[] = routeParams?.takenPhotos;
 
-    if (takenPhotos?.length) {
+    if (routeParams?.takenPhotos?.length) {
+      // store the photo in a temp variable and set the routeParams.takenPhotos to undefined to unsubscribe the componentDidUpdate circle check on this block
+      const takenPhotos: CameraImage[] = routeParams.takenPhotos;
       console.log('taken photos', takenPhotos.length);
-      takenPhotos.forEach(this.handleTakenPhoto);
+
       this.props.navigation.setParams({takenPhotos: undefined});
       this.setState({showFAB: true}); // show fab
+
+      takenPhotos.forEach(this.handleTakenPhoto);
     }
   }
 
@@ -151,8 +220,8 @@ export class TaskCreate extends React.Component<
     }); // see the # between this.task and task
   }
 
-  setImgViewModal = (visible: boolean) => {
-    this.setState({imgViewModal: visible});
+  setAnnotationCanvasModal = (visible: boolean) => {
+    this.setState({annotationCanvasModal: visible});
   };
 
   get vehicleIdentifierLabel() {
@@ -170,6 +239,8 @@ export class TaskCreate extends React.Component<
   // open camera view to take photos snap, each taken photo will be returned by a callback
   openCameraDefault = () => {
     const {navigation} = this.props;
+    navigation.navigate(AppRoutes.KITCHEN);
+
     navigation.navigate(AppRoutes.CAMERA_VIEW, {
       debugMode: DEBUG_MODE,
       showCountBtn: false,
@@ -207,6 +278,36 @@ export class TaskCreate extends React.Component<
     });
   };
 
+  // load the selected image in the imgViewGallery to the annotation canvas
+  openAnnotationCanvas = () => {
+    /*
+    const {navigation} = this.props;
+    const imageIndex = this.state.listImageIndex;
+    const selectedImage: CameraImage = this.state.images[imageIndex];
+    const canvaMedia: any = {...selectedImage};
+
+    navigation.navigate(AppRoutes.ANNOTATION_VIEW, {
+      selectedImage: canvaMedia,
+      listImageIndex: imageIndex,
+      previewGridRef: this.previewGridRef, // Todo move to redux
+      imgViewerRef: this.imgViewerRef, // Todo move to redux
+    });
+
+    this.setAnnotationCanvasModal(false);
+    // 
+    */
+    // this.setAnnotationPalette(true);
+  };
+
+  closeAnnotationCanvas = () => {
+    this.setAnnotationCanvasModal(false);
+  };
+
+  saveDumpedAnnotations = () => {
+    console.log('Finished annotating');
+    this.setAnnotationCanvasModal(false);
+  };
+
   formatTakenPhoto = (takenPhoto: CameraImage): TaskImage => {
     // format takenPhoto to a Task image format and add to the task form.images[] in the state
     const takenPhotoIndex: number = this.form.images.length;
@@ -229,11 +330,13 @@ export class TaskCreate extends React.Component<
       images: [...prevState.images, formatedTakenPhoto],
     }));
 
+    /*
     await saveFileToFs(
       takenPhoto.base64,
       'CAT_' + String(Math.random()),
       FS_PATHS.TASK_IMAGES,
     );
+    */
     //console.log({...formatedTakenPhoto});
   };
 
@@ -277,240 +380,241 @@ export class TaskCreate extends React.Component<
     );
   };
 
-  // Render the grid image gallery under the PreviewGrid on ImageList item press
-  _renderImagesGallery = (images: any[], listImageIndex: number) => (
-    <ImageViewer
-      imageUrls={images}
-      index={listImageIndex}
-      renderIndicator={() => <></>}
-      renderHeader={this._galleryHeader}
-      enableSwipeDown={false}
-      saveToLocalByLongPress={false}
-      useNativeDriver={true}
-    />
-  );
-
-  _galleryTitle = (currentIndex: number | undefined): any => {
-    const itemsCount: number = this.form.images.length;
-    const index: number = currentIndex != undefined ? currentIndex + 1 : 0;
-    return `${index}/${itemsCount}`;
-  };
-
-  _galleryHeader = (currentIndex: number | undefined) => {
-    // format index to display (A/B)
-
+  __renderAnnotationCanvas() {
+    const paletteGroups = [
+      {
+        categoryName: 'DORT FRONT LEFT',
+        description: '',
+        content: ['DENT', 'MISSING PIECE', 'DENT', 'SCRATCH', 'DENT', 'DIRT'],
+        fallBackItem: 'circle',
+      },
+      {
+        categoryName: 'PARRE BRISE',
+        content: ['BROKEN', 'UNKNOWN', 'DENT', 'SCRATCH', 'DENT', 'DIRT'],
+      },
+      {
+        categoryName: 'FRONT RIGHT',
+        content: ['BROKEN', 'UNKNOWN'],
+      },
+      {
+        categoryName: 'PARRECHOC ARRIERE',
+        content: ['BROKEN', 'UNKNOWN'],
+      },
+    ];
     return (
-      <Appbar theme={theme} style={styles.galleryHeader}>
-        <Appbar.BackAction onPress={() => this.setImgViewModal(false)} />
-        <Appbar.Content
-          title={this._galleryTitle(currentIndex)}
-          subtitle="Tap + to annotate the image"
-        />
-        <Appbar.Action icon="plus" size={30} onPress={() => {}} />
-      </Appbar>
+      <Canvas
+        images={this.state.images}
+        onClose={this.closeAnnotationCanvas}
+        onSaveDump={this.saveDumpedAnnotations}
+        initialIndex={this.state.listImageIndex}
+        paletteGroups={paletteGroups}
+        paletteTitle="Annotation Palette"></Canvas>
     );
-  };
-
-  _galleryFooter = (currentIndex: number | undefined) => {
-    // format index to display (A/B)
-
-    return (
-      <Appbar theme={theme} style={styles.galleryHeader}>
-        <Appbar.BackAction onPress={() => this.setImgViewModal(false)} />
-        <Appbar.Content
-          title={this._galleryTitle(currentIndex)}
-          subtitle="Tap + to annotate the image"
-        />
-        <Appbar.Action icon="plus" size={30} onPress={() => {}} />
-      </Appbar>
-    );
-  };
+  }
 
   render() {
-    const {imgViewModal, listImageIndex} = this.state;
-
+    const {
+      annotationCanvasModal,
+      listImageIndex,
+      scrolling,
+      showFAB,
+    } = this.state;
     return (
-      <Portal.Host>
-        <ScrollView
-          style={styles.scrollview}
-          onScrollBeginDrag={this._handleScrollStart}
-          onScrollEndDrag={this._handleScrollEnd}>
-          <View style={styles.formContainer}>
-            {this.state.scrollIsTop ? (
-              <View style={styles.heading}>
-                <View style={styles.headingIcon}>
-                  <Icon
-                    name="car-crash"
-                    color={theme.colors.primary}
-                    size={50}
-                  />
+      <SafeAreaView style={{flex: 1}}>
+        <Portal.Host>
+          <ScrollView
+            style={styles.scrollview}
+            onScrollBeginDrag={this._handleScrollStart}
+            onScrollEndDrag={this._handleScrollEnd}>
+            <View style={styles.formContainer}>
+              {this.state.scrollIsTop ? (
+                <View style={styles.heading}>
+                  <View style={styles.headingIcon}>
+                    <Icon
+                      name="car-crash"
+                      color={theme.colors.primary}
+                      size={50}
+                    />
+                  </View>
+                  <Paragraph style={styles.paragraph}>
+                    {'New annotation task'}
+                  </Paragraph>
+                  <Caption style={[styles.paragraph, styles.caption]}>
+                    {this.headingTitle ?? 'Please specify the task info'}
+                  </Caption>
                 </View>
-                <Paragraph style={styles.paragraph}>
-                  {'New annotation task'}
+              ) : null}
+
+              <View style={styles.formControl}>
+                <Paragraph style={styles.formLabel}>Name</Paragraph>
+                <TextInput
+                  label="Enter task name"
+                  value={this.form.name ?? ''}
+                  onChangeText={(value) => (this.setFormField = {name: value})}
+                />
+              </View>
+
+              <View style={[styles.formControl]}>
+                <Paragraph style={styles.formLabel}>
+                  Vehicle Condition
                 </Paragraph>
+                <Picker
+                  selectedValue={this.formDetails.vehicleContition}
+                  itemStyle={styles.selectOption}
+                  style={styles.formSelect}
+                  onValueChange={(itemValue, itemIndex) =>
+                    (this.setFormDetailsField = {vehicleContition: itemValue})
+                  }>
+                  {vehicleConditions.map((item, index) => (
+                    <Picker.Item
+                      key={index}
+                      label={item.label}
+                      value={item.value}
+                    />
+                  ))}
+                </Picker>
+              </View>
+
+              <View style={[styles.formControl]}>
+                <Paragraph style={styles.formLabel}>Current Activity</Paragraph>
+                <Picker
+                  selectedValue={this.formDetails.vehicleActivity}
+                  itemStyle={styles.selectOption}
+                  style={styles.formSelect}
+                  onValueChange={(itemValue, itemIndex) =>
+                    (this.setFormDetailsField = {vehicleActivity: itemValue})
+                  }>
+                  {vehicleActivities.map((item, index) => (
+                    <Picker.Item
+                      key={index}
+                      label={item.label}
+                      value={item.value}
+                    />
+                  ))}
+                </Picker>
+              </View>
+
+              <View style={styles.formControl}>
+                <Paragraph style={styles.formLabel}>
+                  Vehicle Identifier
+                </Paragraph>
+                <ToggleButton.Row
+                  style={styles.toggleButtonRow}
+                  onValueChange={(value) =>
+                    (this.setFormDetailsField = {vehicleIdentifier: value})
+                  }
+                  value={this.formDetails.vehicleIdentifier ?? ''}>
+                  {vehicleIdentifiers.map((item, key) => (
+                    <ToggleButton
+                      key={key}
+                      style={[
+                        styles.toggleButton,
+                        this.formDetails.vehicleIdentifier == item.value
+                          ? styles.toggleButtonActive
+                          : null,
+                      ]}
+                      icon={() => (
+                        <Caption style={styles.formLabel}>{item.label}</Caption>
+                      )}
+                      value={item.value}
+                    />
+                  ))}
+                </ToggleButton.Row>
+                <TextInput
+                  label={
+                    this.vehicleIdentifierLabel ?? 'Specify the indentifier'
+                  }
+                  value={this.formDetails.vehicleIdentifierVal ?? ''}
+                  onChangeText={(value) =>
+                    (this.setFormDetailsField = {vehicleIdentifierVal: value})
+                  }
+                />
+              </View>
+
+              <View style={styles.formControl}>
+                <Paragraph style={styles.formLabel}>Reference number</Paragraph>
+                <TextInput
+                  label="Reference number"
+                  disabled={true}
+                  value={this.formDetails.vehicleReferenceNumber ?? ''}
+                  onChangeText={(value) => (this.setFormDetailsField = {value})}
+                />
+              </View>
+
+              <View style={[styles.formControl]}>
+                <Paragraph style={styles.formLabel}>
+                  Vehicle Cleanliness
+                </Paragraph>
+                <Picker
+                  selectedValue={this.formDetails.vehicleCleanliness ?? ''}
+                  itemStyle={styles.selectOption}
+                  style={styles.formSelect}
+                  onValueChange={(itemValue, itemIndex) =>
+                    (this.setFormField = {vehicleCleanliness: itemValue})
+                  }>
+                  {vehicleCleanlinesses.map((item, index) => (
+                    <Picker.Item
+                      key={index}
+                      label={item.label}
+                      value={item.value}
+                    />
+                  ))}
+                </Picker>
+              </View>
+              {
+                <PreviewGrid
+                  ref={(ref) => {
+                    this.previewGridRef = ref;
+                  }}
+                  title={this.form.name}
+                  onImageListItemTap={(index: number) => {
+                    this.setState({
+                      listImageIndex: index,
+                      annotationCanvasModal: true,
+                    });
+                  }}
+                  images={this.form.images}></PreviewGrid>
+              }
+
+              <View style={{paddingTop: 10}}>
                 <Caption style={[styles.paragraph, styles.caption]}>
-                  {this.headingTitle ?? 'Please specify the task info'}
+                  {'Long press to capture images in rafale mode !'}
+                </Caption>
+                <Caption style={[styles.paragraph, styles.caption]}>
+                  {'Your task will be managed in the background :)'}
                 </Caption>
               </View>
-            ) : null}
+              <View style={[styles.formControl, styles.formSubmit]}>
+                <Button
+                  style={styles.formSubmitButton}
+                  color={theme.colors.surface}
+                  icon={() => (
+                    <Icon
+                      name="folder-plus"
+                      size={20}
+                      color={theme.colors.dark}></Icon>
+                  )}
+                  mode="contained"
+                  onPress={this._handleOnSubmit}>
+                  Save and continue
+                </Button>
+              </View>
+            </View>
+            {showFAB && !scrolling ? this._renderCameraButton() : null}
+          </ScrollView>
 
-            <View style={styles.formControl}>
-              <Paragraph style={styles.formLabel}>Name</Paragraph>
-              <TextInput
-                label="Enter task name"
-                value={this.form.name ?? ''}
-                onChangeText={(value) => (this.setFormField = {name: value})}
-              />
-            </View>
-
-            <View style={[styles.formControl]}>
-              <Paragraph style={styles.formLabel}>Vehicle Condition</Paragraph>
-              <Picker
-                selectedValue={this.formDetails.vehicleContition}
-                itemStyle={styles.selectOption}
-                style={styles.formSelect}
-                onValueChange={(itemValue, itemIndex) =>
-                  (this.setFormDetailsField = {vehicleContition: itemValue})
-                }>
-                {vehicleConditions.map((item, index) => (
-                  <Picker.Item
-                    key={index}
-                    label={item.label}
-                    value={item.value}
-                  />
-                ))}
-              </Picker>
-            </View>
-
-            <View style={[styles.formControl]}>
-              <Paragraph style={styles.formLabel}>Current Activity</Paragraph>
-              <Picker
-                selectedValue={this.formDetails.vehicleActivity}
-                itemStyle={styles.selectOption}
-                style={styles.formSelect}
-                onValueChange={(itemValue, itemIndex) =>
-                  (this.setFormDetailsField = {vehicleActivity: itemValue})
-                }>
-                {vehicleActivities.map((item, index) => (
-                  <Picker.Item
-                    key={index}
-                    label={item.label}
-                    value={item.value}
-                  />
-                ))}
-              </Picker>
-            </View>
-
-            <View style={styles.formControl}>
-              <Paragraph style={styles.formLabel}>Vehicle Identifier</Paragraph>
-              <ToggleButton.Row
-                style={styles.toggleButtonRow}
-                onValueChange={(value) =>
-                  (this.setFormDetailsField = {vehicleIdentifier: value})
-                }
-                value={this.formDetails.vehicleIdentifier ?? ''}>
-                {vehicleIdentifiers.map((item, key) => (
-                  <ToggleButton
-                    key={key}
-                    style={[
-                      styles.toggleButton,
-                      this.formDetails.vehicleIdentifier == item.value
-                        ? styles.toggleButtonActive
-                        : null,
-                    ]}
-                    icon={() => (
-                      <Caption style={styles.formLabel}>{item.label}</Caption>
-                    )}
-                    value={item.value}
-                  />
-                ))}
-              </ToggleButton.Row>
-              <TextInput
-                label={this.vehicleIdentifierLabel ?? 'Specify the indentifier'}
-                value={this.formDetails.vehicleIdentifierVal ?? ''}
-                onChangeText={(value) =>
-                  (this.setFormDetailsField = {vehicleIdentifierVal: value})
-                }
-              />
-            </View>
-
-            <View style={styles.formControl}>
-              <Paragraph style={styles.formLabel}>Reference number</Paragraph>
-              <TextInput
-                label="Reference number"
-                disabled={true}
-                value={this.formDetails.vehicleReferenceNumber ?? ''}
-                onChangeText={(value) => (this.setFormDetailsField = {value})}
-              />
-            </View>
-
-            <View style={[styles.formControl]}>
-              <Paragraph style={styles.formLabel}>
-                Vehicle Cleanliness
-              </Paragraph>
-              <Picker
-                selectedValue={this.formDetails.vehicleCleanliness ?? ''}
-                itemStyle={styles.selectOption}
-                style={styles.formSelect}
-                onValueChange={(itemValue, itemIndex) =>
-                  (this.setFormField = {vehicleCleanliness: itemValue})
-                }>
-                {vehicleCleanlinesses.map((item, index) => (
-                  <Picker.Item
-                    key={index}
-                    label={item.label}
-                    value={item.value}
-                  />
-                ))}
-              </Picker>
-            </View>
-            {
-              <PreviewGrid
-                title={this.form.name}
-                onImageListItemTap={(index: number) => {
-                  this.setState({listImageIndex: index, imgViewModal: true});
-                }}
-                images={this.form.images}></PreviewGrid>
-            }
-
-            <View style={styles.modalView}>
-              <Modal
-                visible={imgViewModal}
-                transparent={false}
-                animationType="fade"
-                onRequestClose={() => this.setState({imgViewModal: false})}>
-                {this._renderImagesGallery(this.form.images, listImageIndex)}
-              </Modal>
-            </View>
-            <View style={{paddingTop: 10}}>
-              <Caption style={[styles.paragraph, styles.caption]}>
-                {'Long press to capture images in rafale mode !'}
-              </Caption>
-              <Caption style={[styles.paragraph, styles.caption]}>
-                {'Your task will be managed in the background :)'}
-              </Caption>
-            </View>
-            <View style={[styles.formControl, styles.formSubmit]}>
-              <Button
-                style={styles.formSubmitButton}
-                color={theme.colors.surface}
-                icon={() => (
-                  <Icon
-                    name="folder-plus"
-                    size={20}
-                    color={theme.colors.dark}></Icon>
-                )}
-                mode="contained"
-                onPress={this._handleOnSubmit}>
-                Save and continue
-              </Button>
-            </View>
-          </View>
-        </ScrollView>
-        {this.state.showFAB && !this.state.scrolling
-          ? this._renderCameraButton()
-          : null}
-      </Portal.Host>
+          <Modal
+            style={styles.annotationCanvasModal}
+            visible={annotationCanvasModal}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() =>
+              this.setState({annotationCanvasModal: false})
+            }>
+            {this.__renderAnnotationCanvas()}
+          </Modal>
+        </Portal.Host>
+      </SafeAreaView>
     );
   }
 }

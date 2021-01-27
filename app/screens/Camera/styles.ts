@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 0.3,
     backgroundColor: 'rgba(1,1,1,0)',
-    borderColor: 'rgba(255,255,255,0.6)',
+    borderColor: 'rgba(255,255,255,0.8)',
     borderRadius: 25,
     top: 15,
     height: 40,
@@ -82,6 +82,8 @@ const styles = StyleSheet.create({
   closeIcon: {
     fontSize: 20,
     fontWeight: 'bold',
+    position: 'relative',
+    marginTop: -5,
     color: 'rgba(255,255,255,0.70)',
     transform: [{rotateY: '180deg'}],
   },

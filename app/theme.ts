@@ -12,8 +12,12 @@ declare global {
       border: string;
       dodgerblue: string;
       black: string;
-      rippleColor: string;
+      ripple: string;
+      rippleDark: string;
       transparent: string;
+      cavasBgColor: string;
+      canvasBgDark: string;
+      canvasBgLight: string;
     }
     interface Theme {
       borderDefault: number;
@@ -52,7 +56,11 @@ export const theme = {
     border: '#e0e0e0',
     dodgerblue: 'dodgerblue',
     black: '#000',
-    rippleColor: 'rgba(1, 87, 155, .05)', // 'rgba(0, 0, 0, .03)',
+    ripple: 'rgba(1, 87, 155, .05)', // 'rgba(0, 0, 0, .03)',
+    rippleDark: 'rgba(255,255,255,0.1)',
     transparent: 'rgba(0,0,0,0)', // or 'rgba(0,0,0,0.5)'
+    canvasBg: 'papayawhip',
+    canvasBgDark: 'rgba(0,0,0,1)',
+    canvasBgLight: 'rgba(255, 255, 255,0.95)',
   },
 };

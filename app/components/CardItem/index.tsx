@@ -21,7 +21,7 @@ export const CardItem = (props: CardItemProps) => {
   return (
     <Surface style={styles.container}>
       <TouchableRipple
-        rippleColor={theme.colors.rippleColor}
+        rippleColor={theme.colors.ripple}
         onPress={() => (props.onPress ? props.onPress(props.id) : undefined)}>
         <View style={styles.row}>
           <View style={styles.header}>

@@ -54,11 +54,15 @@ export class Camera extends PureComponent<CameraProps, CameraState> {
   }
 
   componentWillUnmount() {
-    // prevent the native hardware back press
-    BackHandler.removeEventListener(
-      'hardwareBackPress',
-      this.backWithTakenPhotos,
-    );
+    try {
+      // prevent the native hardware back press
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        this.backWithTakenPhotos,
+      );
+    } catch (e) {
+      this.debug(e.message);
+    }
   }
 
   // return takenPhotos back to the CreateTask view
@@ -156,6 +160,14 @@ export class Camera extends PureComponent<CameraProps, CameraState> {
     }
   }
 
+  startDragBBOX(even: any) {
+    console.log('drag start', even);
+  }
+
+  stopDragBBOX(even: any) {
+    console.log('drag stop', even);
+  }
+
   render() {
     const {state, isMaxCount, isRafaleMode} = this;
 
@@ -195,6 +207,10 @@ export class Camera extends PureComponent<CameraProps, CameraState> {
           </TouchableOpacity>
         </View>
         {isRafaleMode && this._renderCloseButton()}
+        {/* 
+        <View style={[{ alignItems: 'center', justifyContent: 'center' }]}>
+          {this.renderSvg()}
+        </View>*/}
       </SafeAreaView>
     );
   }

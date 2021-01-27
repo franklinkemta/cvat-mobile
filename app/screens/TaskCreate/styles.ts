@@ -3,9 +3,6 @@ import {theme} from '/theme';
 
 const styles = StyleSheet.create({
   scrollview: {flex: 1},
-  modalView: {
-    flex: 1,
-  },
   formContainer: {
     paddingHorizontal: theme.paddingXDefault,
     paddingBottom: '50%',
@@ -73,14 +70,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: theme.borderDefault,
     borderBottomColor: theme.colors.primary,
   },
-  galleryHeader: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    zIndex: 1,
-    backgroundColor: theme.colors.transparent,
+  annotationCanvasModal: {
+    flex: 1,
   },
 });
 

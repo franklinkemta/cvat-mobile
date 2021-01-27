@@ -21,6 +21,8 @@ target 'CATMobile' do
 
   pod 'RNFS', :path => '../node_modules/react-native-fs'
 
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
   target 'CATMobileTests' do
     inherit! :complete
     # Pods for testing

@@ -1,7 +1,6 @@
 import React from 'react';
 // import {TouchableOpacity} from 'react-native';
 import {Appbar, Avatar, useTheme} from 'react-native-paper';
-
 // Vector icons
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -43,13 +42,11 @@ function _renderOtherActions({scene, navigation}: any, theme: any) {
   }
 }
 
-function _renderDefaultHeader(
-  {scene, previous, navigation}: any,
-  title: any,
-  theme: any,
-) {
+function _renderDefaultHeader(props: any, title: any, theme: any) {
+  const {scene, previous, navigation}: any = props;
+
   return (
-    <Appbar.Header theme={{colors: {primary: theme.colors.surface}}}>
+    <Appbar.Header theme={{colors: {primary: theme.colors.surface}}} {...props}>
       {previous ? (
         <Appbar.BackAction
           onPress={navigation.goBack}
@@ -74,7 +71,7 @@ function _renderDefaultHeader(
         <Appbar.Action
           icon={() => <Icon name="bars" size={25} />}
           onPress={() => {
-            navigation.openDrawer();
+            navigation.toggleDrawer();
           }}
         />
       )}
@@ -100,6 +97,8 @@ export const Header = (props: any) => {
 
   switch (routeName) {
     case AppRoutes.CAMERA_VIEW:
+      return null;
+    case AppRoutes.ANNOTATION_VIEW:
       return null;
     default:
       return _renderDefaultHeader(props, title, theme);

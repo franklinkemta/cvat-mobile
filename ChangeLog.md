@@ -133,7 +133,13 @@ https://www.npmjs.com/package/react-native-image-zoom-viewer
 # cd android && ./gradlew installDebug --stacktrace
 
 # To clean gradlew 
-# cd android && ./gradlew clean
+# cd android && ./gradlew clean && cd ..
+
+# To build gradlew
+# cd android && ./gradlew build && cd ..
+
+# To clear everything and rebuild
+# rm -rf node_modules && yarn && rm -rf ~/.gradle/caches/* && ./scripts/buildAndroidRelease.sh
 
 # Multidex limit to 64k problem solve after installed react-native-camera
 # https://jqn.medium.com/react-native-multidex-error-8f9a1daf8c34
@@ -146,3 +152,25 @@ https://www.npmjs.com/package/react-native-image-zoom-viewer
 
 # Generate a bootsplash
 # https://github.com/zoontek/react-native-bootsplash
+
+# https://github.com/react-native-svg/react-native-svg
+
+# https://jeremybarbet.github.io/react-native-modalize
+# https://github.com/jeremybarbet/react-native-modalize
+
+# https://github.com/gorhom/react-native-bottom-sheet
+
+# Changes made with gesture handler
+# https://docs.swmansion.com/react-native-gesture-handler/docs/
+# https://github.com/react-native-community/cli/tree/master#updating-the-cli
+# Dont forget to updated the react-native-comunity when gesture handler enable
+
+# Change installing react animated 
+# https://docs.swmansion.com/react-native-reanimated/docs/installation
+# we will use react animated and react svg to draw and drag svg in annotation screen
+
+# https://github.com/oblador/react-native-animatable vs react-native-animated
+
+# Scroll bar hide header with react native reanimated v2 
+# https://callstack.com/blog/reanimating-your-react-native-experience/
+# https://github.com/release-it/release-it
