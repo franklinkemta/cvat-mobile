@@ -330,12 +330,13 @@ export class TaskCreate extends React.Component<
       images: [...prevState.images, formatedTakenPhoto],
     }));
 
-    
+    /*
     await saveFileToFs(
       takenPhoto.base64,
       'CAT_' + String(Math.random()),
       FS_PATHS.TASK_IMAGES,
     );
+    */
     
     //console.log({...formatedTakenPhoto});
   };
