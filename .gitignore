@@ -1,6 +1,8 @@
 # OSX
 #
 .DS_Store
+# Added by franklin kemta to ignore android/java_prof big files who are too large for git.
+*.hprof
 
 # Xcode
 #

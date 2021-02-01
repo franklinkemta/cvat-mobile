@@ -93,22 +93,27 @@ https://www.npmjs.com/package/react-native-image-zoom-viewer
 # https://github.com/ascoders/react-native-image-viewer
 
 # Published the react-native-preview-images package to npm official repository manager
+
 # Removed "react-native-preview-images": "./node_dev_modules/react-native-preview-images", from package.json
 
 # A good package for swiping components and images in RN https://github.com/leecade/react-native-swiper
 
 # https://medium.com/miquido/how-to-create-responsive-layouts-in-react-native-7c4cfa15f1de
+
 # https://github.com/yamill/react-native-orientation
 
 # A playground to learn flex properties https://yogalayout.com/playground
 
 # Changed from https://github.com/yamill/react-native-orientation
+
 # To the newer package https://github.com/wonday/react-native-orientation-locker
 
 # https://github.com/wKovacs64/react-native-responsive-image-view
 
 # Interesting package to store items key values in storage in RN
+
 # https://react-native-async-storage.github.io/async-storage/
+
 # https://github.com/react-native-async-storage/async-storage
 
 # https://github.com/bamlab/react-native-image-header-scroll-view
@@ -116,61 +121,95 @@ https://www.npmjs.com/package/react-native-image-zoom-viewer
 # https://github.com/bamlab/react-native-image-resizer
 
 # https://github.com/aeirola/react-native-svg-asset-plugin
+
 # https://github.com/DylanVann/react-native-fast-image
+
 # https://github.com/gre/react-native-view-shot
+
 # https://github.com/terrysahaidak/react-native-gallery-toolkit
+
 # https://github.com/jeremybarbet/react-native-modalize
+
 # https://github.com/jfilter/react-native-onboarding-swiper
+
 # https://github.com/jacse/react-native-app-intro-slider
+
 # https://github.com/computerjazz/react-native-draggable-flatlist
+
 # https://github.com/react-native-image-picker/react-native-image-picker
+
 # https://www.npmjs.com/package/react-native-root-toast
 
 # Integrated react-native-camera step by step using the documentation at this link
+
 # https://react-native-camera.github.io/react-native-camera/docs/installation
 
 # To run react native app with debug enabled with stacktrace
+
 # cd android && ./gradlew installDebug --stacktrace
 
-# To clean gradlew 
+# To clean gradlew
+
 # cd android && ./gradlew clean && cd ..
 
 # To build gradlew
+
 # cd android && ./gradlew build && cd ..
 
 # To clear everything and rebuild
-# rm -rf node_modules && yarn && rm -rf ~/.gradle/caches/* && ./scripts/buildAndroidRelease.sh
+
+# rm -rf node_modules && yarn && rm -rf ~/.gradle/caches/\* && ./scripts/buildAndroidRelease.sh
 
 # Multidex limit to 64k problem solve after installed react-native-camera
+
 # https://jqn.medium.com/react-native-multidex-error-8f9a1daf8c34
 
 # Note that we can use react native camera to record on tap positions on the camera view, and use it for annotation
+
 # https://react-native-camera.github.io/react-native-camera/docs/rncamera#ontap
+
 # https://medium.com/codespace69/typescript-oop-how-do-i-implement-multiple-interfaces-in-a-class-bab7f631043f
 
 # https://initnance/react-native-fs
 
 # Generate a bootsplash
+
 # https://github.com/zoontek/react-native-bootsplash
 
 # https://github.com/react-native-svg/react-native-svg
 
 # https://jeremybarbet.github.io/react-native-modalize
+
 # https://github.com/jeremybarbet/react-native-modalize
 
 # https://github.com/gorhom/react-native-bottom-sheet
 
 # Changes made with gesture handler
+
 # https://docs.swmansion.com/react-native-gesture-handler/docs/
+
 # https://github.com/react-native-community/cli/tree/master#updating-the-cli
+
 # Dont forget to updated the react-native-comunity when gesture handler enable
 
-# Change installing react animated 
+# Change installing react animated
+
 # https://docs.swmansion.com/react-native-reanimated/docs/installation
+
 # we will use react animated and react svg to draw and drag svg in annotation screen
 
 # https://github.com/oblador/react-native-animatable vs react-native-animated
 
-# Scroll bar hide header with react native reanimated v2 
+# Scroll bar hide header with react native reanimated v2
+
 # https://callstack.com/blog/reanimating-your-react-native-experience/
+
 # https://github.com/release-it/release-it
+
+# Jetifyer fixed reanimated bug
+
+# https://stackoverflow.com/questions/57934866/react-native-reanimated-error-execution-failed-for-task-react-native-reanimat
+
+# https://docs.gradle.org/6.8/userguide/command_line_interface.html
+
+# Gradlew Commandline

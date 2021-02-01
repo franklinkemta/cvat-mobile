@@ -8,20 +8,13 @@ target 'CATMobile' do
 
   use_react_native!(:path => config["reactNativePath"])
 
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-
-  pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
-
-  pod 'RNCPicker', :path => '../node_modules/@react-native-picker/picker'
 
 
-  pod 'react-native-orientation-locker', :path => '../node_modules/react-native-orientation-locker'
 
-  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
 
-  pod 'RNFS', :path => '../node_modules/react-native-fs'
 
-  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
+
 
   target 'CATMobileTests' do
     inherit! :complete

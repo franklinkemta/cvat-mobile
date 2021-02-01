@@ -268,6 +268,7 @@ export class TaskCreate extends React.Component<
       FS_PATHS.TASK_IMAGES,
     );
     */
+    
     //console.log({...formatedTakenPhoto});
   };
 

@@ -34,7 +34,7 @@ export const saveFileToFs = async (
   path += '/' + fileName; // add the file name
   // const stats = await RNFS.PicturesDirectoryPath
   // throw 'UNIMPLEMENTED';
-  return Promise.resolve('UNIMPLEMENTED');
+  // return Promise.resolve('UNIMPLEMENTED');
   /*
   return RNFS.writeFile(path, fileData)
     .then((sucess: any) => {
