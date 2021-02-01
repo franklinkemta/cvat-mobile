@@ -28,7 +28,7 @@ import {
 } from 'react-native-paper';
 import Autocomplete from 'react-native-autocomplete-input';
 // import vectors icons for palette
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import {theme} from '/theme';
 import styles from './styles';
@@ -51,10 +51,11 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
 
   const safeAreaInsets = useSafeAreaInsets();
   const bottomSnapPoints = [
-    `${safeAreaInsets.bottom + 100}%`,
+    `${safeAreaInsets.top}%`,
     `${safeAreaInsets.bottom + 63.5}%`,
     `${safeAreaInsets.bottom + 40}%`,
     `${safeAreaInsets.bottom + 30}%`,
+    `${safeAreaInsets.bottom + 8}%`,
     `${safeAreaInsets.bottom + 0}`,
   ]; //  [450, 300, 60, 0] // maxSnapPoint
 
@@ -70,6 +71,18 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     return imgViewerRef.current?.state.currentShowIndex;
   };
 
+  const handleCanvasClose = () => {
+    // call the on close
+    onClose();
+    navigation.goBack();
+  };
+
+  const handleCanvasSave = () => {
+    // call the on save
+    onSaveDump();
+    navigation.goBack();
+  };
+
   const openPalette = () => {
     console.log('opening palette');
     paletteRef.current?.snapTo(openSnapPoint);
@@ -78,7 +91,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   const openPaletteSearch = () => {
     console.log('opening search in palette');
     // show in fullscreen when the search input in focused
-    paletteRef.current?.snapTo(0);
+    // paletteRef.current?.snapTo(0);
   };
 
   const closePalette = () => {
@@ -102,7 +115,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   const canvasHeader = () => {
     return (
       <Appbar theme={theme} style={styles.canvaHeader}>
-        <Appbar.BackAction onPress={() => onClose()} />
+        <Appbar.BackAction onPress={handleCanvasClose} />
         <Appbar.Content
           title={getHeaderTitle()}
           titleStyle={{
@@ -118,7 +131,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
           style={styles.saveDumpBtn}
           color={theme.colors.surface}
           size={25}
-          onPress={() => onSaveDump()}
+          onPress={handleCanvasSave}
         />
       </Appbar>
     );
@@ -254,7 +267,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         snapPoints={bottomSnapPoints}
         borderRadius={10}
         onOpenStart={() => {
-          console.log('open');
+          // query the palette list
         }}
         initialSnap={closedSnapPoint}
         renderHeader={paletteHeader}
@@ -271,7 +284,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   };
   // return the ImgageViewer Configured as the canvas with the palette
   return (
-    <SafeAreaView style={{flex: 1, zIndex: 1, position: 'absolute'}}>
+    <SafeAreaView style={{flex: 1}}>
       <ImageViewer
         ref={imgViewerRef}
         imageUrls={images}
@@ -284,7 +297,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         onSwipeDown={onClose}
         saveToLocalByLongPress={false}
         useNativeDriver={true}
-        enablePreload={true}
+        enablePreload={false}
         style={styles.canvasContainer}
         footerContainerStyle={styles.canvasFooterContainerStyles}
       />

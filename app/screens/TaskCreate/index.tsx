@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createRef} from 'react';
 import {Image, Modal, ScrollView, View} from 'react-native';
 
 import {
@@ -75,7 +75,7 @@ export class TaskCreate extends React.Component<
   TaskCreateProps,
   TaskFormState
 > {
-  previewGridRef: PreviewGrid;
+  previewGridRef = createRef<PreviewGrid>();
 
   state = {
     showFAB: true,
@@ -100,15 +100,18 @@ export class TaskCreate extends React.Component<
       vehicleReferenceNumber: undefined,
       vehicleCleanliness: undefined,
     },
-    images: [],
+    images: [
+      {
+        metas: {name: 'Image 4'},
+        url:
+          'https://www.moteur.ma/media/photos/ads/resized/kia-sportage-873425.JPG',
+      },
+    ],
   };
 
   constructor(props: TaskCreateProps) {
     super(props);
-    this.previewGridRef = new PreviewGrid({
-      images: [],
-      onImageListItemTap: this.openAnnotationCanvas,
-    });
+    this.previewGridRef = createRef<PreviewGrid>();
     // note that we only bind when we dont define our handle function as arrow function like this taskFunc = () =>
   }
 
@@ -219,23 +222,26 @@ export class TaskCreate extends React.Component<
     const {navigation} = this.props;
 
     // hide the previewGrid
-    this.previewGridRef.setState({modalVisible: false});
+    this.previewGridRef.current?.setState({modalVisible: false});
 
     navigation.navigate(AppRoutes.ANNOTATION_CANVAS, {
       images: this.state.images,
-      onClose: null, // this.handleAnnotationCanvasClosed,
-      onSaveDump: null, // this.handleSaveDumpedAnnotations,
+      onClose: this.handleAnnotationCanvasClosed,
+      onSaveDump: this.handleSaveDumpedAnnotations,
       initialIndex: this.state.listImageIndex,
       paletteGroups: paletteGroups,
+      paletteTitle: 'Select a damage marker',
     });
   };
 
   handleAnnotationCanvasClosed = () => {
     console.log('Annotation closed');
+    this.previewGridRef.current?.setState({modalVisible: true});
   };
 
   handleSaveDumpedAnnotations = () => {
     console.log('Finished annotating');
+    this.previewGridRef.current?.setState({modalVisible: true});
   };
 
   formatTakenPhoto = (takenPhoto: CameraImage): TaskImage => {
@@ -259,7 +265,6 @@ export class TaskCreate extends React.Component<
     this.setState((prevState) => ({
       images: [...prevState.images, formatedTakenPhoto],
     }));
-    // this.previewGridRef.props.images = images
 
     /*
     await saveFileToFs(
@@ -268,7 +273,7 @@ export class TaskCreate extends React.Component<
       FS_PATHS.TASK_IMAGES,
     );
     */
-    
+
     //console.log({...formatedTakenPhoto});
   };
 
@@ -291,9 +296,10 @@ export class TaskCreate extends React.Component<
     });
   };
   _handleScrollTop = () => {
-    this.setState({
-      scrollIsTop: true,
-    });
+    this &&
+      this.setState({
+        scrollIsTop: true,
+      });
   };
 
   _renderCameraButton = () => {
@@ -313,7 +319,7 @@ export class TaskCreate extends React.Component<
   };
 
   render() {
-    const {listImageIndex, scrolling, showFAB} = this.state;
+    const {listImageIndex, images, scrolling, showFAB} = this.state;
     return (
       <SafeAreaView style={{flex: 1}}>
         <Portal.Host>
@@ -456,7 +462,11 @@ export class TaskCreate extends React.Component<
                   ))}
                 </Picker>
               </View>
-              {this.previewGridRef.render()}
+              <PreviewGrid
+                ref={this.previewGridRef}
+                images={images}
+                onImageListItemTap={this.openAnnotationCanvas}
+              />
 
               <View style={{paddingTop: 10}}>
                 <Caption style={[styles.paragraph, styles.caption]}>

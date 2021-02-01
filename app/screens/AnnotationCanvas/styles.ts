@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     justifyContent: 'center',
     // borderTopColor: theme.colors.border,
-    //borderTopWidth: 5,
+    // borderTopWidth: 5,
   },
 
   bottomSheetPaletteContent: {

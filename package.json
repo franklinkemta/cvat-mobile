@@ -31,7 +31,7 @@
         "react-native-image-zoom-viewer": "^3.0.1",
         "react-native-orientation-locker": "^1.2.0",
         "react-native-paper": "^4.7.0",
-        "react-native-preview-images": "^1.0.2",
+        "react-native-preview-images": "../../NodeDevModules/react-native-preview-images",
         "react-native-snap-carousel": "^3.9.1",
         "react-native-svg": "^12.1.0",
         "react-native-swiper": "^1.6.0",

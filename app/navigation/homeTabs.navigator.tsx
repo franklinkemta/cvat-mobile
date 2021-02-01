@@ -31,16 +31,14 @@ export const HomeTabsNavigator = (props: any) => {
   const theme = useTheme();
 
   useEffect(() => {
+    /*
     const routeName =
       getFocusedRouteNameFromRoute(props.route) ?? HomeTabs.TASKS_STACK_TAB;
     // console.log(routeName, props.route);
     // update the current routeName when the componentUpdate
     setRouteName(routeName);
+    */
   });
-
-  if (true) {
-    console.log('ANOON', routeName);
-  }
 
   return (
     <SafeAreaView style={{flex: 1}}>
