@@ -4,7 +4,7 @@ export enum AppRoutes {
   TASKS = 'Tasks',
   TASK_DETAILS = 'TaskDetails',
   TASK_CREATE = 'TaskCreate',
-  CAMERA_VIEW = 'Camera',
-  ANNOTATION_VIEW = 'AnnotationView',
+  CAMERA = 'Camera',
+  ANNOTATION_CANVAS = 'AnnotationCanvas',
   KITCHEN = 'Kitchen', // the place things are made :) ! we test everything there
 }

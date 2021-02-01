@@ -4,6 +4,6 @@ export * from './Tasks';
 export * from './TaskDetails';
 export * from './TaskCreate';
 export * from './Camera';
-export * from './Annotation';
+export * from './AnnotationCanvas';
 // For dev only
 export * from './Kitchen';

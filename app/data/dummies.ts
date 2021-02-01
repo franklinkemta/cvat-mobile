@@ -103,3 +103,62 @@ export const tasks: Omit<Task, 'onPress'>[] = [
     updateDate: '15-01-2021 14:30:15',
   },
 ];
+
+// dummies images
+export const images = [
+  {
+    metas: {name: 'Image 1'},
+    annotations: [
+      {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
+      {
+        customAnnotationTypeName: 'FENDER BACK LEFT',
+        labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
+      },
+    ],
+    url: 'https://source.unsplash.com/1600x900/?bus,travel',
+  },
+  {
+    metas: {name: 'Image 1'},
+    annotations: [
+      {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
+      {
+        customAnnotationTypeName: 'FENDER BACK LEFT',
+        labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
+      },
+    ],
+    url: 'https://source.unsplash.com/1600x900/?bus,travel',
+  },
+  {
+    metas: {name: 'Image 1'},
+    annotations: [
+      {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
+      {
+        customAnnotationTypeName: 'FENDER BACK LEFT',
+        labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
+      },
+    ],
+    url: 'https://source.unsplash.com/1600x900/?bus,travel',
+  },
+  {
+    metas: {name: 'Image 1'},
+    annotations: [
+      {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
+      {
+        customAnnotationTypeName: 'FENDER BACK LEFT',
+        labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
+      },
+    ],
+    url: 'https://source.unsplash.com/1600x900/?bus,travel',
+  },
+  {
+    metas: {name: 'Image 1'},
+    annotations: [
+      {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
+      {
+        customAnnotationTypeName: 'FENDER BACK LEFT',
+        labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
+      },
+    ],
+    url: 'https://source.unsplash.com/1600x900/?bus,travel',
+  },
+];

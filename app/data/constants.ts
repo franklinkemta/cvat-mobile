@@ -26,3 +26,24 @@ export const vehicleIdentifiers = [
 export const annotationLabels = ['DENT', 'MISSING_PIECE', 'SCRATCH', 'BROKEN'];
 
 export const carouselImages: TaskImage[] = [];
+
+export const paletteGroups = [
+  {
+    categoryName: 'DORT FRONT LEFT',
+    description: '',
+    content: ['DENT', 'MISSING PIECE', 'DENT', 'SCRATCH', 'DENT', 'DIRT'],
+    fallBackItem: 'circle',
+  },
+  {
+    categoryName: 'PARRE BRISE',
+    content: ['BROKEN', 'UNKNOWN', 'DENT', 'SCRATCH', 'DENT', 'DIRT'],
+  },
+  {
+    categoryName: 'FRONT RIGHT',
+    content: ['BROKEN', 'UNKNOWN'],
+  },
+  {
+    categoryName: 'PARRECHOC ARRIERE',
+    content: ['BROKEN', 'UNKNOWN'],
+  },
+];

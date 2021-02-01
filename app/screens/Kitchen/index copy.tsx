@@ -4,7 +4,6 @@ import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
 
 export const Kitchen = () => {
-  console.log('Opening kitchen');
   const renderContent = () => (
     <View
       style={{

@@ -24,7 +24,7 @@ function _renderOtherActions({scene, navigation}: any, theme: any) {
           }}
         />
       );
-    case AppRoutes.CAMERA_VIEW:
+    case AppRoutes.CAMERA:
       return (
         <Appbar.Action
           icon={() => (
@@ -96,9 +96,9 @@ export const Header = (props: any) => {
   const {name: routeName, params} = scene.route;
 
   switch (routeName) {
-    case AppRoutes.CAMERA_VIEW:
+    case AppRoutes.CAMERA:
       return null;
-    case AppRoutes.ANNOTATION_VIEW:
+    case AppRoutes.ANNOTATION_CANVAS:
       return null;
     default:
       return _renderDefaultHeader(props, title, theme);

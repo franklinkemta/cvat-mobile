@@ -7,7 +7,7 @@ import {AppRoutes} from '/navigation/routes';
 
 // import header
 import {Header} from '../../../components/Header';
-import {AnnotationView} from '/screens/Annotation';
+import {AnnotationCanvas} from '../../AnnotationCanvas';
 
 const Stack = createStackNavigator();
 
@@ -36,7 +36,7 @@ export const TaskCreateStackTab = () => {
         options={{headerTitle: 'Create Task'}}
       />
       <Stack.Screen
-        name={AppRoutes.CAMERA_VIEW}
+        name={AppRoutes.CAMERA}
         component={Camera}
         options={{
           headerTitle: 'Add photos to tasks',
@@ -45,8 +45,8 @@ export const TaskCreateStackTab = () => {
         }}
       />
       <Stack.Screen
-        name={AppRoutes.ANNOTATION_VIEW}
-        component={AnnotationView}
+        name={AppRoutes.ANNOTATION_CANVAS}
+        component={AnnotationCanvas}
         options={{
           headerTitle: 'Annotate the image',
           animationEnabled: true,

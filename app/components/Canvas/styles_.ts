@@ -87,11 +87,15 @@ const styles = StyleSheet.create({
     flex: 1,
     flexWrap: 'wrap',
     alignItems: 'flex-start',
-    alignContent: 'flex-start',
     justifyContent: 'flex-start',
     flexDirection: 'row',
   },
-  paletteGroupContentItem: {},
+  paletteGroupContentItem: {
+    borderWidth: 0.2,
+    marginEnd: 1,
+    marginTop: 1,
+    borderColor: theme.colors.dark,
+  },
 });
 
 export default styles;

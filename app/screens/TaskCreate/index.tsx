@@ -47,9 +47,10 @@ import {
   vehicleActivities,
   vehicleCleanlinesses,
   vehicleIdentifiers,
+  paletteGroups,
+  images,
 } from '/data';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Canvas} from '../../components/Canvas';
 
 // Todo: Move this to app global config
 const MAX_TASK_PHOTOS_DEFAULT = 20;
@@ -68,22 +69,13 @@ interface TaskFormState extends Task {
   scrolling?: boolean;
   scrollIsTop?: boolean;
   listImageIndex?: number;
-  annotationCanvasModal?: boolean;
-  annotationPalette?: boolean;
 }
-
-/*
-const AnnotationPalette = () => {
-
-}
-*/
 
 export class TaskCreate extends React.Component<
   TaskCreateProps,
   TaskFormState
 > {
-  previewGridRef: any;
-  imgViewerRef: any;
+  previewGridRef: PreviewGrid;
 
   state = {
     showFAB: true,
@@ -108,70 +100,15 @@ export class TaskCreate extends React.Component<
       vehicleReferenceNumber: undefined,
       vehicleCleanliness: undefined,
     },
-    images: [
-      /*
-      {
-        metas: {name: 'Image 1'},
-        annotations: [
-          {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
-          {
-            customAnnotationTypeName: 'FENDER BACK LEFT',
-            labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
-          },
-        ],
-        url: 'https://source.unsplash.com/1600x900/?bus,travel',
-      },
-      {
-        metas: {name: 'Image 1'},
-        annotations: [
-          {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
-          {
-            customAnnotationTypeName: 'FENDER BACK LEFT',
-            labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
-          },
-        ],
-        url: 'https://source.unsplash.com/1600x900/?bus,travel',
-      },
-      {
-        metas: {name: 'Image 1'},
-        annotations: [
-          {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
-          {
-            customAnnotationTypeName: 'FENDER BACK LEFT',
-            labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
-          },
-        ],
-        url: 'https://source.unsplash.com/1600x900/?bus,travel',
-      },
-      {
-        metas: {name: 'Image 1'},
-        annotations: [
-          {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
-          {
-            customAnnotationTypeName: 'FENDER BACK LEFT',
-            labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
-          },
-        ],
-        url: 'https://source.unsplash.com/1600x900/?bus,travel',
-      },
-      {
-        metas: {name: 'Image 1'},
-        annotations: [
-          {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
-          {
-            customAnnotationTypeName: 'FENDER BACK LEFT',
-            labels: ['DENT', 'BROKEN', 'MISSING PIECE'],
-          },
-        ],
-        url: 'https://source.unsplash.com/1600x900/?bus,travel',
-      },
-      */
-    ],
+    images: [],
   };
 
   constructor(props: TaskCreateProps) {
     super(props);
-    // this.previewGridRef = React.useRef<PreviewGrid>(null);
+    this.previewGridRef = new PreviewGrid({
+      images: [],
+      onImageListItemTap: this.openAnnotationCanvas,
+    });
     // note that we only bind when we dont define our handle function as arrow function like this taskFunc = () =>
   }
 
@@ -220,10 +157,6 @@ export class TaskCreate extends React.Component<
     }); // see the # between this.task and task
   }
 
-  setAnnotationCanvasModal = (visible: boolean) => {
-    this.setState({annotationCanvasModal: visible});
-  };
-
   get vehicleIdentifierLabel() {
     // return the current selected vehicle identifier label
     const items = vehicleIdentifiers.filter(
@@ -241,7 +174,7 @@ export class TaskCreate extends React.Component<
     const {navigation} = this.props;
     navigation.navigate(AppRoutes.KITCHEN);
 
-    navigation.navigate(AppRoutes.CAMERA_VIEW, {
+    navigation.navigate(AppRoutes.CAMERA, {
       debugMode: DEBUG_MODE,
       showCountBtn: false,
       maxNumberOfPhotos: MAX_TASK_PHOTOS_DEFAULT,
@@ -261,7 +194,7 @@ export class TaskCreate extends React.Component<
   // open camera view to take photos snap, each taken photo will be returned by a callback
   openCameraRafale = () => {
     const {navigation} = this.props;
-    navigation.navigate(AppRoutes.CAMERA_VIEW, {
+    navigation.navigate(AppRoutes.CAMERA, {
       debugMode: DEBUG_MODE, // show debug only on rafale mode for now, because this mode is unsafe
       showCountBtn: true,
       maxNumberOfPhotos: MAX_TASK_PHOTOS_DEFAULT,
@@ -279,33 +212,30 @@ export class TaskCreate extends React.Component<
   };
 
   // load the selected image in the imgViewGallery to the annotation canvas
-  openAnnotationCanvas = () => {
-    /*
-    const {navigation} = this.props;
-    const imageIndex = this.state.listImageIndex;
-    const selectedImage: CameraImage = this.state.images[imageIndex];
-    const canvaMedia: any = {...selectedImage};
-
-    navigation.navigate(AppRoutes.ANNOTATION_VIEW, {
-      selectedImage: canvaMedia,
-      listImageIndex: imageIndex,
-      previewGridRef: this.previewGridRef, // Todo move to redux
-      imgViewerRef: this.imgViewerRef, // Todo move to redux
+  openAnnotationCanvas = (index: number) => {
+    this.setState({
+      listImageIndex: index,
     });
+    const {navigation} = this.props;
 
-    this.setAnnotationCanvasModal(false);
-    // 
-    */
-    // this.setAnnotationPalette(true);
+    // hide the previewGrid
+    this.previewGridRef.setState({modalVisible: false});
+
+    navigation.navigate(AppRoutes.ANNOTATION_CANVAS, {
+      images: this.state.images,
+      onClose: null, // this.handleAnnotationCanvasClosed,
+      onSaveDump: null, // this.handleSaveDumpedAnnotations,
+      initialIndex: this.state.listImageIndex,
+      paletteGroups: paletteGroups,
+    });
   };
 
-  closeAnnotationCanvas = () => {
-    this.setAnnotationCanvasModal(false);
+  handleAnnotationCanvasClosed = () => {
+    console.log('Annotation closed');
   };
 
-  saveDumpedAnnotations = () => {
+  handleSaveDumpedAnnotations = () => {
     console.log('Finished annotating');
-    this.setAnnotationCanvasModal(false);
   };
 
   formatTakenPhoto = (takenPhoto: CameraImage): TaskImage => {
@@ -329,6 +259,7 @@ export class TaskCreate extends React.Component<
     this.setState((prevState) => ({
       images: [...prevState.images, formatedTakenPhoto],
     }));
+    // this.previewGridRef.props.images = images
 
     /*
     await saveFileToFs(
@@ -380,45 +311,8 @@ export class TaskCreate extends React.Component<
     );
   };
 
-  __renderAnnotationCanvas() {
-    const paletteGroups = [
-      {
-        categoryName: 'DORT FRONT LEFT',
-        description: '',
-        content: ['DENT', 'MISSING PIECE', 'DENT', 'SCRATCH', 'DENT', 'DIRT'],
-        fallBackItem: 'circle',
-      },
-      {
-        categoryName: 'PARRE BRISE',
-        content: ['BROKEN', 'UNKNOWN', 'DENT', 'SCRATCH', 'DENT', 'DIRT'],
-      },
-      {
-        categoryName: 'FRONT RIGHT',
-        content: ['BROKEN', 'UNKNOWN'],
-      },
-      {
-        categoryName: 'PARRECHOC ARRIERE',
-        content: ['BROKEN', 'UNKNOWN'],
-      },
-    ];
-    return (
-      <Canvas
-        images={this.state.images}
-        onClose={this.closeAnnotationCanvas}
-        onSaveDump={this.saveDumpedAnnotations}
-        initialIndex={this.state.listImageIndex}
-        paletteGroups={paletteGroups}
-        paletteTitle="Annotation Palette"></Canvas>
-    );
-  }
-
   render() {
-    const {
-      annotationCanvasModal,
-      listImageIndex,
-      scrolling,
-      showFAB,
-    } = this.state;
+    const {listImageIndex, scrolling, showFAB} = this.state;
     return (
       <SafeAreaView style={{flex: 1}}>
         <Portal.Host>
@@ -561,20 +455,7 @@ export class TaskCreate extends React.Component<
                   ))}
                 </Picker>
               </View>
-              {
-                <PreviewGrid
-                  ref={(ref) => {
-                    this.previewGridRef = ref;
-                  }}
-                  title={this.form.name}
-                  onImageListItemTap={(index: number) => {
-                    this.setState({
-                      listImageIndex: index,
-                      annotationCanvasModal: true,
-                    });
-                  }}
-                  images={this.form.images}></PreviewGrid>
-              }
+              {this.previewGridRef.render()}
 
               <View style={{paddingTop: 10}}>
                 <Caption style={[styles.paragraph, styles.caption]}>
@@ -602,17 +483,6 @@ export class TaskCreate extends React.Component<
             </View>
             {showFAB && !scrolling ? this._renderCameraButton() : null}
           </ScrollView>
-
-          <Modal
-            style={styles.annotationCanvasModal}
-            visible={annotationCanvasModal}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={() =>
-              this.setState({annotationCanvasModal: false})
-            }>
-            {this.__renderAnnotationCanvas()}
-          </Modal>
         </Portal.Host>
       </SafeAreaView>
     );

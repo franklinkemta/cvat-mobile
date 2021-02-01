@@ -12,6 +12,7 @@ import {TasksStackTab} from '../screens/Home/Tabs/tasksStack.tab';
 import {TaskCreateStackTab} from '../screens/Home/Tabs/taskCreateStack.tab';
 
 import {Tabs as HomeTabs, HomeTabsContext} from '/screens/Home/Tabs/tabs';
+import {AppRoutes} from './routes';
 
 // Let define a type to be sure we received the navigation elements
 type Props = {
@@ -23,6 +24,7 @@ type Props = {
 const Tab = createMaterialBottomTabNavigator();
 
 export const HomeTabsNavigator = (props: any) => {
+  const {scene, navigator, route} = props;
   const [routeName, setRouteName] = useState('');
 
   // todo take it from the state
@@ -35,6 +37,10 @@ export const HomeTabsNavigator = (props: any) => {
     // update the current routeName when the componentUpdate
     setRouteName(routeName);
   });
+
+  if (true) {
+    console.log('ANOON', routeName);
+  }
 
   return (
     <SafeAreaView style={{flex: 1}}>

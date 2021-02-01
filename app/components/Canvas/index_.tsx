@@ -35,7 +35,7 @@ import styles from './styles';
 import {DEVICE_HEIGHT} from '/utils';
 
 // Note that we wrap our app inside a gestureHandlerRootHOC, Read the docu. to learn more :) !
-export const Canvas = gestureHandlerRootHOC((props: any) => {
+export const _Canvas = gestureHandlerRootHOC((props: any) => {
   const {
     images,
     paletteGroups,
@@ -44,6 +44,8 @@ export const Canvas = gestureHandlerRootHOC((props: any) => {
     onClose,
     paletteTitle,
   } = props;
+
+  // TODO TYPES THE PROPS TO PREVENT UNEXPECTED ERRORS
 
   const paletteRef = React.useRef<BottomSheet>(null);
   const imgViewerRef = React.useRef<ImageViewer>(null);
@@ -190,7 +192,7 @@ export const Canvas = gestureHandlerRootHOC((props: any) => {
 
     // TODO: Form draggable list before creating the palette group
     const renderPaletteGroup = ({item: paletteGroup, index}: any) => {
-      console.log('render renderPaletteGroup', paletteGroup);
+      // console.log('render renderPaletteGroup', paletteGroup);
       return (
         <View style={styles.paletteGroupContainer}>
           <Paragraph style={styles.paletteGroupHeader}>
@@ -258,7 +260,7 @@ export const Canvas = gestureHandlerRootHOC((props: any) => {
         initialSnap={closedSnapPoint}
         renderHeader={paletteHeader}
         renderContent={paletteContent}
-        enabledManualSnapping
+        enabledInnerScrolling
         enabledBottomInitialAnimation
       />
     );
