@@ -462,13 +462,6 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         initialSnap={closedSnapPoint}
         renderHeader={paletteHeader}
         renderContent={paletteContent}
-        enabledBottomClamp
-        enabledBottomInitialAnimation={false}
-        enabledGestureInteraction={true}
-        enabledHeaderGestureInteraction={true}
-        enabledInnerScrolling={true}
-        enabledManualSnapping={true}
-        enabledImperativeSnapping={true}
       />
     );
   };
