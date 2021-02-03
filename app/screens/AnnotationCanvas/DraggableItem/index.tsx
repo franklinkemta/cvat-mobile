@@ -17,8 +17,8 @@ const DraggableItem = (props: any) => {
             r={draggableItem.origin.width + '%'}
             stroke={draggableItem.color}
             strokeWidth={isFocused ? 2 : 1}
-            opacity={isFocused ? 0.2 : 1}
-            fill={isFocused ? 'white' : 'transparent'}></Circle>
+            opacity={isFocused ? 0.6 : 1}
+            fill={isFocused ? 'black' : 'transparent'}></Circle>
           <Text
             x={draggableItem.origin.x - draggableItem.origin.width} //  - 5 + '%'
             y={draggableItem.origin.y - draggableItem.origin.height - 2} //  - 11 + '%'
@@ -45,7 +45,7 @@ const DraggableItem = (props: any) => {
             stroke={draggableItem.color}
             strokeWidth={isFocused ? 8 : 6}
             opacity={isFocused ? 0.6 : 0.4}
-            fill={isFocused ? 'white' : 'transparent'}></Line>
+            fill={isFocused ? 'black' : 'transparent'}></Line>
           <Text
             x={draggableItem.origin.x - 2} //  - 5 + '%'
             y={draggableItem.origin.y - 8} //  - 11 + '%'
@@ -71,8 +71,8 @@ const DraggableItem = (props: any) => {
             height={draggableItem.origin.height + '%'}
             stroke={draggableItem.color}
             strokeWidth={isFocused ? 2 : 1}
-            opacity={isFocused ? 0.2 : 1}
-            fill={isFocused ? 'white' : 'transparent'}></Rect>
+            opacity={isFocused ? 0.6 : 1}
+            fill={isFocused ? 'black' : 'transparent'}></Rect>
           <Text
             x={draggableItem.origin.x} //  - 5 + '%'
             y={draggableItem.origin.y - 2} //  - 11 + '%'

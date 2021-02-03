@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {
   gestureHandlerRootHOC,
-  TouchableOpacity,
+  // TouchableOpacity,
 } from 'react-native-gesture-handler';
 
 import {Svg, Image} from 'react-native-svg';
@@ -35,7 +35,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import {theme} from '/theme';
 import styles from './styles';
-import {DEVICE_HEIGHT, idFromUuid} from '/utils';
+import {DEVICE_HEIGHT, idFromUuid, TouchableOpacity} from '/utils';
 import DraggableItem from './DraggableItem';
 
 // Note that we wrap our app inside a gestureHandlerRootHOC, Read the docu. to learn more :) !
@@ -61,6 +61,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     `${safeAreaInsets.bottom + 30}%`,
     `${safeAreaInsets.bottom + 8}%`,
     `${safeAreaInsets.bottom + 0}`,
+     `${safeAreaInsets.bottom -8}%`,
   ]; //  [450, 300, 60, 0] // maxSnapPoint
 
   const openSnapPoint = 1; // 63.5%
@@ -116,7 +117,6 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   const addSelectedItem = (svgEvent: any) => {
     // item: any, paletteGroupName: string
     // console.warn('SVG add item click event', svgEvent.nativeEvent);
-    console.log(selectedPaletteGroupItem);
     // console.log('layout', svgEvent.nativeEvent.layout);
     if (selectedPaletteGroupItem != undefined) {
       const drawAnnotationItem: any = {
@@ -369,7 +369,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
       return (
         <TouchableOpacity
           key={index}
-          onPress={() => setSelectedPaletteGroupItem(draggableItem)}>
+          onPress={() => { setFocusedItem(undefined); setSelectedPaletteGroupItem(draggableItem)}}>
           <Chip
             mode={'outlined'}
             style={styles.paletteGroupItem}
