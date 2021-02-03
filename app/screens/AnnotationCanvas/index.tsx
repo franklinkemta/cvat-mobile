@@ -1,16 +1,19 @@
-import * as React from 'react';
+import React, {useRef, useState} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Button,
   Dimensions,
+  // Image,
   // TouchableOpacity,
 } from 'react-native';
-import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
+import {
+  gestureHandlerRootHOC,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 
-import {Svg, Rect} from 'react-native-svg';
-import Animated from 'react-native-reanimated';
+import {Svg, Image} from 'react-native-svg';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -32,7 +35,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import {theme} from '/theme';
 import styles from './styles';
-import {DEVICE_HEIGHT} from '/utils';
+import {DEVICE_HEIGHT, idFromUuid} from '/utils';
+import DraggableItem from './DraggableItem';
 
 // Note that we wrap our app inside a gestureHandlerRootHOC, Read the docu. to learn more :) !
 export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
@@ -46,8 +50,8 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     paletteTitle,
   } = route.params;
 
-  const paletteRef = React.useRef<BottomSheet>(null);
-  const imgViewerRef = React.useRef<ImageViewer>(null);
+  const paletteRef = useRef<BottomSheet>(null);
+  const imgViewerRef = useRef<ImageViewer>(null);
 
   const safeAreaInsets = useSafeAreaInsets();
   const bottomSnapPoints = [
@@ -62,11 +66,16 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   const openSnapPoint = 1; // 63.5%
   const closedSnapPoint = bottomSnapPoints.length - 1;
 
-  const [filterQuery, setFilterQuery] = React.useState('');
-  const [currentPaletteGroups, setCurrentPaletteGroups] = React.useState(
+  const [filterQuery, setFilterQuery] = useState('');
+  const [currentPaletteGroups, setCurrentPaletteGroups] = useState(
     paletteGroups,
   ); // get the categories from the palettes initial value
 
+  const [annotations, setAnnotations] = useState(Array);
+  const [selectedPaletteGroupItem, setSelectedPaletteGroupItem] = useState(
+    undefined,
+  );
+  const [focusedItem, setFocusedItem] = useState(undefined); // to handle double tap on each draggable item
   const getCurrentIndex = () => {
     return imgViewerRef.current?.state.currentShowIndex;
   };
@@ -84,23 +93,106 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   };
 
   const openPalette = () => {
-    console.log('opening palette');
+    // console.log('opening palette');
     paletteRef.current?.snapTo(openSnapPoint);
   };
 
   const openPaletteSearch = () => {
-    console.log('opening search in palette');
+    // console.log('opening search in palette');
     // show in fullscreen when the search input in focused
     // paletteRef.current?.snapTo(0);
   };
 
   const closePalette = () => {
-    console.log('closing palette');
+    // console.log('closing palette');
     paletteRef.current?.snapTo(closedSnapPoint);
   };
 
-  const addCustomPaletteGroup = () => {
-    console.log('add custom palette group');
+  const clearPaletteFilters = () => {
+    console.log('clear custom palette group');
+    setFilterQuery('');
+  };
+
+  const addSelectedItem = (svgEvent: any) => {
+    // item: any, paletteGroupName: string
+    // console.warn('SVG add item click event', svgEvent.nativeEvent);
+    console.log(selectedPaletteGroupItem);
+    // console.log('layout', svgEvent.nativeEvent.layout);
+    if (selectedPaletteGroupItem != undefined) {
+      const drawAnnotationItem: any = {
+        id: idFromUuid(), // create a unique id for each drawed item
+        ...(selectedPaletteGroupItem ?? {}),
+        origin: {
+          x: svgEvent.nativeEvent.locationX,
+          y: svgEvent.nativeEvent.locationY,
+          width: 10, // + '%',
+          height: 10, //  + '%',
+        },
+      };
+      // console.log('Draw', String(drawAnnotationItem));
+      const newAnnotations: any = [...annotations, drawAnnotationItem];
+      setAnnotations(newAnnotations); // add annotation item
+      // setSelectedPaletteGroupItem(undefined); // unselected item from palette
+    }
+  };
+
+  const removeSelectedItem = () => {
+    // item: any, paletteGroupName: string
+    // console.warn('SVG remove item click event', svgItemEvent.nativeEvent);
+    const draggableItem: any = focusedItem;
+    setAnnotations(
+      annotations.filter((item: any) => item.id != draggableItem.id),
+    ); // remove the item at index
+    setFocusedItem(undefined); // clear focused item
+  };
+
+  const moveSelectedItem = (svgItemEvent: any) => {
+    // console.warn('SVG move item click event', svgItemEvent.nativeEvent);
+    if (focusedItem != undefined) {
+      const draggableItem: any = focusedItem;
+      const width = draggableItem.origin.width;
+      const height = draggableItem.origin.height;
+
+      const movedItem: any = {
+        ...draggableItem,
+        origin: {
+          x: svgItemEvent.nativeEvent.locationX,
+          y: svgItemEvent.nativeEvent.locationY,
+          width: width, // zoomIN/OUT width
+          height: height, // zoomIN/OUT height
+        },
+      };
+      setAnnotations([
+        ...annotations.filter((item: any) => item.id != draggableItem.id),
+        movedItem,
+      ]); // update the item at index
+      setFocusedItem(movedItem);
+    }
+  };
+
+  const zoomSelectItem = (zoomRatio: number) => {
+    // console.warn('SVG zoom item click event', svgItemEvent.nativeEvent);
+    if (focusedItem != undefined) {
+      // console.log('moving');
+      const draggableItem: any = focusedItem;
+      const width = draggableItem.origin.width + zoomRatio;
+      const height = draggableItem.origin.height + zoomRatio;
+
+      const zoomedItem: any = {
+        ...draggableItem,
+        origin: {
+          x: draggableItem.origin.x,
+          y: draggableItem.origin.y,
+          width: width, // zoomIN/OUT width
+          height: height, // zoomIN/OUT height
+        },
+      };
+      setAnnotations([
+        ...annotations.filter((item: any) => item.id != draggableItem.id),
+        zoomedItem,
+      ]); // update the item at index
+      setFocusedItem(zoomedItem);
+    }
   };
 
   // return the  current current index/totalCount for the header // formated to display (A/B)
@@ -124,7 +216,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
           style={{
             alignItems: 'center',
           }}
-          subtitle="Tap + to annotate the image"
+          subtitle="Tap to annotate the image"
         />
         <Appbar.Action
           icon="check"
@@ -137,31 +229,95 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     );
   };
 
+  const renderSelectedItemOptions = () => {
+    const ZoomRatio = 2; // how much we should zoomIn or zoomOut the item
+    return (
+      <Appbar style={styles.canvaFooter}>
+        <Appbar.Action
+          icon="plus-circle-outline"
+          size={30}
+          onPress={() => zoomSelectItem(ZoomRatio)}
+          color={theme.colors.border}></Appbar.Action>
+        <Appbar.Action
+          icon="minus-circle-outline"
+          size={30}
+          onPress={() => zoomSelectItem(-ZoomRatio)}
+          color={theme.colors.border}></Appbar.Action>
+        <Appbar.Action
+          icon="close-circle-outline"
+          size={30}
+          onPress={() => setFocusedItem(undefined)}
+          onLongPress={removeSelectedItem}
+          color={theme.colors.border}></Appbar.Action>
+      </Appbar>
+    );
+  };
+
   const canvasFooter = () => {
     return (
       <>
-        <TouchableRipple
-          rippleColor={theme.colors.rippleDark}
-          onPress={() => openPalette()}>
-          <Appbar style={styles.canvaFooter}>
-            <Appbar.Content
-              title="_______"
-              subtitle={paletteTitle}
-              titleStyle={{
-                fontWeight: '100',
-                fontSize: 15,
-              }}
-              style={{
-                alignItems: 'center',
-              }}></Appbar.Content>
-          </Appbar>
-        </TouchableRipple>
+        {focusedItem ? (
+          renderSelectedItemOptions()
+        ) : (
+          <TouchableRipple
+            rippleColor={theme.colors.rippleDark}
+            onPress={() => openPalette()}>
+            <Appbar style={styles.canvaFooter}>
+              <Appbar.Content
+                title="_______"
+                subtitle={paletteTitle}
+                titleStyle={{
+                  fontWeight: '100',
+                  fontSize: 15,
+                }}
+                style={{
+                  alignItems: 'center',
+                }}></Appbar.Content>
+            </Appbar>
+          </TouchableRipple>
+        )}
       </>
     );
   };
 
+  const renderDraggableItem = (draggableItem: any, index: number) => {
+    // console.info('Drawing item', draggableItem);
+    // check the draggableItem.svgtFrom and display the corresponding form
+    const currentFocusedItem: any = focusedItem;
+    const isFocused =
+      currentFocusedItem && currentFocusedItem.id == draggableItem.id;
+    return (
+      <DraggableItem
+        key={index}
+        draggableItem={draggableItem}
+        isFocused={isFocused}
+        onPressIn={() => setFocusedItem(draggableItem)}
+      />
+    );
+  };
+
+  const canvasContent = (props: any) => {
+    // console.log(props);
+    return (
+      <Svg
+        style={{flex: 1}}
+        fill="transparent"
+        onTouchStart={addSelectedItem}
+        onTouchMove={moveSelectedItem}
+        onPress={() => {}}
+        onTouchEnd={() => {
+          setSelectedPaletteGroupItem(undefined);
+        }}>
+        <Image href={props.source?.uri} />
+        {annotations.map((draggableItem: any, index: number) =>
+          renderDraggableItem(draggableItem, index),
+        )}
+      </Svg>
+    );
+  };
+
   const renderLoader = () => {
-    console.log('Canvas is loading');
+    // console.log('Canvas is loading');
     return (
       <View style={{}}>
         <ActivityIndicator color={'grey'} size="large" style={{}} />
@@ -194,17 +350,43 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     );
 
     const autoCompleteRightIcon = () => (
-      <IconButton
-        color="black"
-        onPress={addCustomPaletteGroup}
-        icon={() => (
-          <Icon size={20} color="black" name="plus-circle" />
-        )}></IconButton>
+      <TouchableOpacity onPress={clearPaletteFilters}>
+        <IconButton color="black" icon="close-circle" />
+      </TouchableOpacity>
     );
+
+    // display a selectable item from the bottom palette
+    const renderPaletteGroupItem = ({item, index}: any, paletteGroup: any) => {
+      const draggableItem: any = {
+        item: item,
+        svgForm: paletteGroup.fallBackForm ?? 'rect',
+        icon: paletteGroup.fallBackIcon ?? 'square',
+        color: paletteGroup.fallBackColor ?? 'white',
+        paletteIndex: paletteGroup.index ?? paletteGroup.categoryName,
+      };
+      const selected: any = selectedPaletteGroupItem;
+      const isSelected = draggableItem.item == selected?.item;
+      return (
+        <TouchableOpacity
+          key={index}
+          onPress={() => setSelectedPaletteGroupItem(draggableItem)}>
+          <Chip
+            mode={'outlined'}
+            style={styles.paletteGroupItem}
+            selectedColor={
+              isSelected ? draggableItem.color : theme.colors.black
+            }
+            theme={theme}
+            icon={item.icon ?? draggableItem.icon}>
+            {item.name ?? String(item)}
+          </Chip>
+        </TouchableOpacity>
+      );
+    };
 
     // TODO: Form draggable list before creating the palette group
     const renderPaletteGroup = ({item: paletteGroup, index}: any) => {
-      console.log('render renderPaletteGroup', paletteGroup);
+      // console.log('render renderPaletteGroup', paletteGroup);
       return (
         <View style={styles.paletteGroupContainer}>
           <Paragraph style={styles.paletteGroupHeader}>
@@ -212,23 +394,12 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
           </Paragraph>
           <View style={styles.paletteGroupContent}>
             {paletteGroup.content?.length &&
-              paletteGroup.content.map((item: any, itemIndex: number) => (
-                <Chip
-                  mode="outlined"
-                  style={styles.paletteGroupContentItem}
-                  theme={theme}
-                  key={itemIndex}
-                  icon={item.svgForm ?? paletteGroup.fallBackItem ?? 'square'}
-                  onPress={() =>
-                    console.log(
-                      paletteGroup.categoryName ?? '[UNKNOWN]',
-                      'Palette Item select Item',
-                      item.name ?? String(item),
-                    )
-                  }>
-                  {item.name ?? String(item)}
-                </Chip>
-              ))}
+              paletteGroup.content.map((item: any, itemIndex: number) =>
+                renderPaletteGroupItem(
+                  {item: item, index: itemIndex},
+                  {index: index, ...paletteGroup},
+                ),
+              )}
           </View>
         </View>
       );
@@ -245,11 +416,15 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
           containerStyle={styles.autocompleteContainer}
           inputContainerStyle={styles.autocompleteInputContainer}
           renderTextInput={(attrs: any) => (
-            <Searchbar clearIcon={autoCompleteRightIcon} {...attrs} />
+            <Searchbar
+              inputStyle={{padding: 0}}
+              clearIcon={autoCompleteRightIcon}
+              {...attrs}
+            />
           )}
           autoCorrect={false}
           data={currentPaletteGroups}
-          placeholder="Filter  e.g: Dort front left "
+          placeholder="Filter damage types "
           defaultValue={filterQuery}
           onContentSizeChange={() => openPaletteSearch()}
           onChangeText={(text) => setFilterQuery(text)}
@@ -260,6 +435,8 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         <Text>Swipe down to close</Text>
       </View>
     );
+
+    // console.log(images[0]?.width);
 
     return (
       <BottomSheet
@@ -272,13 +449,6 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         initialSnap={closedSnapPoint}
         renderHeader={paletteHeader}
         renderContent={paletteContent}
-        enabledInnerScrolling
-        enabledContentTapInteraction
-        enabledHeaderGestureInteraction
-        enabledImperativeSnapping
-        enabledBottomInitialAnimation
-        enabledBottomClamp
-        enabledContentGestureInteraction
       />
     );
   };
@@ -293,10 +463,11 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         renderIndicator={() => <></>}
         renderHeader={canvasHeader}
         renderFooter={canvasFooter}
-        enableSwipeDown={true}
+        renderImage={canvasContent}
+        enableSwipeDown={false}
         onSwipeDown={onClose}
         saveToLocalByLongPress={false}
-        useNativeDriver={true}
+        useNativeDriver={false}
         enablePreload={false}
         style={styles.canvasContainer}
         footerContainerStyle={styles.canvasFooterContainerStyles}
@@ -305,22 +476,3 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     </SafeAreaView>
   );
 });
-
-/*
-  renderSvg() {
-    return (
-      <Svg height="100%" width="100%" fill="red" viewBox="0 0 100 100">
-        <Rect
-          x={this.x}
-          y={this.y}
-          width="20"
-          height="20"
-          stroke="white"
-          strokeWidth="1"
-          fill="transparent"
-          onPressIn={this.startDragBBOX}
-          onPressOut={this.stopDragBBOX}
-        />
-      </Svg>
-    );
-  }*/

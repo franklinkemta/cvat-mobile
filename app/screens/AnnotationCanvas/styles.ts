@@ -41,6 +41,8 @@ const styles = StyleSheet.create({
   canvaFooter: {
     //bottom: 0,
     // position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: theme.colors.transparent,
   },
 
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     flexDirection: 'row',
   },
-  paletteGroupContentItem: {
+  paletteGroupItem: {
     borderWidth: 0.2,
     marginEnd: 1,
     marginTop: 1,

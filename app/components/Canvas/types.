@@ -11,7 +11,7 @@
 };
 
  class DraggableItem {
-  index: number; // required to select and know the item that was tappped / selected
+  id?: string; // required to select and know the item that was tappped / selected
   item?: any; // the item that will be returned back  with the result after the drag, // we'll use it to store ids, or indexes
   paletteIndex: number; // we save the paletted index so that we can group the dumps by categories, e.g DORT_FRONT_LEFT [ 'DENT', 'SCRATCH' ]
   currentlyAt?: Coordinates; // updated during the drag
@@ -38,7 +38,8 @@
   categoryName: string; // Exemple : DORT FRONT LEFT || PORTIERE AVANT || PARECHOC ARRIERE etc.. // the palleteName is a kindof primary key
   description?: string; // any other description to display
   content: string[];
-  fallBackItem?: string; // if we need to set a default svgForm for all items of this palette.
+  fallBackForm?: string; // if we need to set a default svgForm for all items of this palette.
+  fallBackColor?: string;
 };
 
  type CanvasMedia = {
@@ -66,7 +67,7 @@ type CanvasProps = {
 // canvas state  // can serve to definie the default state values
  type CanvasState = {
   currentDrags?: DraggableItem[]; // will be dumped at the end of the draggs,
-  focusedItemIndex?: number; // dragged item index
+  focusedItemId?: number; // dragged item index
   focusedItem?: DraggableItem; // currentFocused item
   lastDraggedCordinates: DraggableItem[]; // when we drag an item, we push the change in the list, so the last draggedItem/focusedItem is the item at the length-1 of the list
 }
@@ -84,7 +85,7 @@ type CanvasProps = {
   itemHasBeenRotated(itemIndex: number, to: Coordinates): void; // update // set focused item
   itemHeenSelected(itemIndex: number, at: Coordinates): void; // update // set focused item
 
-  get focusedItemIndex(): DraggableItem | undefined;
+  get focusedItemId(): DraggableItem | undefined;
   set focusetItemIndex(draggableItem: DraggableItem): void;
 
   get focusedItem(): DraggableItem | undefined ; // it can be undefined when nothing is selected

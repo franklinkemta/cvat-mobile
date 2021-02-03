@@ -27,12 +27,13 @@ export const annotationLabels = ['DENT', 'MISSING_PIECE', 'SCRATCH', 'BROKEN'];
 
 export const carouselImages: TaskImage[] = [];
 
+/*
 export const paletteGroups = [
   {
     categoryName: 'DORT FRONT LEFT',
     description: '',
     content: ['DENT', 'MISSING PIECE', 'DENT', 'SCRATCH', 'DENT', 'DIRT'],
-    fallBackItem: 'circle',
+    fallBackForm: 'circle',
   },
   {
     categoryName: 'PARRE BRISE',
@@ -45,5 +46,58 @@ export const paletteGroups = [
   {
     categoryName: 'PARRECHOC ARRIERE',
     content: ['BROKEN', 'UNKNOWN'],
+    fallBackForm: 'circle',
+  },
+];
+*/
+
+// Damage Category based
+export const paletteGroups = [
+  {
+    categoryName: 'IMPACT LABELS',
+    description: '',
+    content: [{name: 'DENT'}, {name: 'BODY_CRACK'}, {name: 'MISSHAPE'}],
+    fallBackForm: 'circle',
+    fallBackColor: 'orange',
+    fallBackIcon: 'circle',
+  },
+  {
+    categoryName: 'PAINT LABELS',
+    content: [
+      {name: 'SCRATCH'},
+      {name: 'GROUP_OF_SCRATCHES'},
+      {name: 'SCATTERED_SCRATCHES'},
+      {name: 'RUSTINESS'},
+      {name: 'PAINT_PEELING'},
+    ],
+    fallBackForm: 'line', // path
+    fallBackColor: 'cyan',
+    fallBackIcon: 'minus',
+  },
+  {
+    categoryName: 'ELEMENT LABELS',
+    content: [
+      {name: 'MISSING_PIECE'},
+      {name: 'MISSING_HUBCAP'},
+      {name: 'HUBCAP_SCRATCH'},
+      {name: 'BROKEN_GLASS'},
+      {name: 'BROKEN_LIGHT'},
+    ],
+    fallBackForm: 'ellipse',
+    fallBackColor: 'red',
+    fallBackIcon: 'selection-ellipse',
+  },
+  {
+    categoryName: 'COMMON LABELS',
+    content: [
+      {name: 'SMASH'},
+      {name: 'NOT_DEFINED'},
+      {name: 'LIGHT_REFLECTIONS'},
+      {name: 'CAR_LINEs_AND_CURVES'},
+      {name: 'SHADOWS'},
+    ],
+    // fallBackForm: 'rect',
+    // fallBackColor: 'white',
+    fallBackIcon: 'selection-drag', // square
   },
 ];

@@ -185,6 +185,7 @@ export class TaskCreate extends React.Component<
       cameraOptions: {
         // inner camera module options
         base64: true,
+        width: 1920, // the base resolution, that we will use for our canvas
         quality: 0.5, // take high quality in default mode
         doNotSave: true,
         pauseAfterCapture: true,
@@ -205,6 +206,7 @@ export class TaskCreate extends React.Component<
       cameraOptions: {
         // inner camera module options
         base64: true,
+        width: 1920, // the base resolution, that we will use for our canvas
         quality: 0.2, // take low quality on rafales
         doNotSave: true,
         pauseAfterCapture: false,
@@ -261,6 +263,12 @@ export class TaskCreate extends React.Component<
   // the callback that handle the taken camera photos snap
   handleTakenPhoto = async (takenPhoto: CameraImage) => {
     const formatedTakenPhoto = this.formatTakenPhoto(takenPhoto);
+
+    console.log(
+      'Taken picture Width x Height',
+      formatedTakenPhoto.width,
+      formatedTakenPhoto.height,
+    );
 
     this.setState((prevState) => ({
       images: [...prevState.images, formatedTakenPhoto],
