@@ -61,7 +61,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     `${safeAreaInsets.bottom + 30}%`,
     `${safeAreaInsets.bottom + 8}%`,
     `${safeAreaInsets.bottom + 0}`,
-     `${safeAreaInsets.bottom -8}%`,
+    `${safeAreaInsets.bottom - 8}%`,
   ]; //  [450, 300, 60, 0] // maxSnapPoint
 
   const openSnapPoint = 1; // 63.5%
@@ -230,7 +230,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   };
 
   const renderSelectedItemOptions = () => {
-    const ZoomRatio = 2; // how much we should zoomIn or zoomOut the item
+    const ZoomRatio = 0.5; // how much we should zoomIn or zoomOut the item
     return (
       <Appbar style={styles.canvaFooter}>
         <Appbar.Action
@@ -297,7 +297,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   };
 
   const canvasContent = (props: any) => {
-    // console.log(props);
+    console.log(props);
     return (
       <Svg
         style={{flex: 1}}
@@ -308,7 +308,13 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         onTouchEnd={() => {
           setSelectedPaletteGroupItem(undefined);
         }}>
-        <Image href={props.source?.uri} />
+        <Image
+          href={props.source?.uri}
+          x="0"
+          y="0"
+          height="100%"
+          width="100%"
+        />
         {annotations.map((draggableItem: any, index: number) =>
           renderDraggableItem(draggableItem, index),
         )}
@@ -369,12 +375,19 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
       return (
         <TouchableOpacity
           key={index}
-          onPress={() => { setFocusedItem(undefined); setSelectedPaletteGroupItem(draggableItem)}}>
+          onPress={() => {
+            setFocusedItem(undefined);
+            setSelectedPaletteGroupItem(draggableItem);
+          }}>
           <Chip
             mode={'outlined'}
             style={styles.paletteGroupItem}
             selectedColor={
-              isSelected ? draggableItem.color : theme.colors.black
+              isSelected
+                ? draggableItem.color == 'white'
+                  ? theme.colors.primary
+                  : draggableItem.color
+                : theme.colors.black
             }
             theme={theme}
             icon={item.icon ?? draggableItem.icon}>
@@ -449,6 +462,13 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         initialSnap={closedSnapPoint}
         renderHeader={paletteHeader}
         renderContent={paletteContent}
+        enabledBottomClamp
+        enabledBottomInitialAnimation={false}
+        enabledGestureInteraction={true}
+        enabledHeaderGestureInteraction={true}
+        enabledInnerScrolling={true}
+        enabledManualSnapping={true}
+        enabledImperativeSnapping={true}
       />
     );
   };

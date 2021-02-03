@@ -16,15 +16,15 @@ const DraggableItem = (props: any) => {
             y={draggableItem.origin.y} // - 10 + '%'
             r={draggableItem.origin.width + '%'}
             stroke={draggableItem.color}
-            strokeWidth={isFocused ? 2 : 1}
+            strokeWidth={1}
             opacity={isFocused ? 0.6 : 1}
-            fill={isFocused ? 'black' : 'transparent'}></Circle>
+            fill={isFocused ? 'grey' : 'transparent'}></Circle>
           <Text
             x={draggableItem.origin.x - draggableItem.origin.width} //  - 5 + '%'
             y={draggableItem.origin.y - draggableItem.origin.height - 2} //  - 11 + '%'
             textAnchor="middle"
             fontWeight="normal"
-            fontSize="7"
+            fontSize="6"
             fill={draggableItem.color}>
             {draggableItem.item?.name ?? String(draggableItem.item)}
           </Text>
@@ -51,7 +51,7 @@ const DraggableItem = (props: any) => {
             y={draggableItem.origin.y - 8} //  - 11 + '%'
             textAnchor="start"
             fontWeight="normal"
-            fontSize="7"
+            fontSize="6"
             fill={draggableItem.color}>
             {draggableItem.item?.name ?? String(draggableItem.item)}
           </Text>
@@ -70,15 +70,15 @@ const DraggableItem = (props: any) => {
             width={draggableItem.origin.width + '%'}
             height={draggableItem.origin.height + '%'}
             stroke={draggableItem.color}
-            strokeWidth={isFocused ? 2 : 1}
+            strokeWidth={1}
             opacity={isFocused ? 0.6 : 1}
-            fill={isFocused ? 'black' : 'transparent'}></Rect>
+            fill={isFocused ? 'grey' : 'transparent'}></Rect>
           <Text
             x={draggableItem.origin.x} //  - 5 + '%'
             y={draggableItem.origin.y - 2} //  - 11 + '%'
             textAnchor="start"
             fontWeight="normal"
-            fontSize="7"
+            fontSize="6"
             fill={draggableItem.color}>
             {draggableItem.item?.name ?? String(draggableItem.item)}
           </Text>

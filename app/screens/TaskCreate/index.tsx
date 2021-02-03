@@ -104,7 +104,7 @@ export class TaskCreate extends React.Component<
       {
         metas: {name: 'Image 4'},
         url:
-          'https://www.moteur.ma/media/photos/ads/resized/kia-sportage-873425.JPG',
+          'https://prod.pictures.autoscout24.net/listing-images/5883fd5d-84de-4a46-9039-b8a0dc3627e6_3cdf9e4b-ae17-4a4b-8e2a-c3ef53e65842.jpg/640x480.jpg',
       },
     ],
   };
