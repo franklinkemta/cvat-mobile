@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {View, Text, TouchableOpacity, BackHandler, Image} from 'react-native';
+import {View, Text, TouchableOpacity, BackHandler} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 // import the react native camera module

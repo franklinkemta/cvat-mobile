@@ -1,10 +1,11 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Button,
   Dimensions,
+  BackHandler,
   // Image,
   // TouchableOpacity,
 } from 'react-native';
@@ -69,7 +70,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
 
   const [filterQuery, setFilterQuery] = useState('');
   const [currentPaletteGroups, setCurrentPaletteGroups] = useState(
-    paletteGroups,
+    Array, // paletteGroups
   ); // get the categories from the palettes initial value
 
   const [annotations, setAnnotations] = useState(Array);
@@ -81,13 +82,29 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     return imgViewerRef.current?.state.currentShowIndex;
   };
 
+  // release hardware back button or not
+  const releaseBackButton = (release: boolean) => {
+    if (release) {
+      BackHandler.removeEventListener('hardwareBackPress', () => false);
+    } else {
+      BackHandler.addEventListener('hardwareBackPress', () => true);
+    }
+  };
+
+  useEffect(() => {
+    // prevent the hardware back button from going back without saved result
+    releaseBackButton(false);
+  });
+
   const handleCanvasClose = () => {
+    releaseBackButton(true);
     // call the on close
     onClose();
     navigation.goBack();
   };
 
   const handleCanvasSave = () => {
+    releaseBackButton(true);
     // call the on save
     onSaveDump();
     navigation.goBack();
@@ -104,6 +121,12 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     // paletteRef.current?.snapTo(0);
   };
 
+  const initSearchPalette = async () => {
+    console.log('init search palette');
+    // query the palette list
+    if (!currentPaletteGroups.length) setCurrentPaletteGroups(paletteGroups);
+  };
+
   const closePalette = () => {
     // console.log('closing palette');
     paletteRef.current?.snapTo(closedSnapPoint);
@@ -112,6 +135,37 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   const clearPaletteFilters = () => {
     console.log('clear custom palette group');
     setFilterQuery('');
+    setCurrentPaletteGroups(paletteGroups);
+    setSelectedPaletteGroupItem(undefined);
+  };
+
+  // apply a the queryText entered in the autocomplete to the paletteGroups contents
+  const searchInPallette = (queryText: string) => {
+    setFilterQuery(queryText);
+    // use the current filter key to filter the paletteItems
+    const regex = new RegExp(`${queryText.trim()}`, 'i');
+    // the first filter return the paletteGroups that names match the filter or any content item match the filter
+    const firstResultsFilter: Array<any> = paletteGroups.filter(
+      (paletteGroup: any) =>
+        paletteGroup.categoryName?.search(regex) >= 0 ||
+        paletteGroup.content.filter(
+          (label: any) => label.name?.search(regex) >= 0,
+        ).length > 0,
+    );
+
+    // we apply a second filter on the first result to return only the labels those match the filter query
+    const secondResultsFilter: Array<any> = firstResultsFilter.map(
+      (paletteGroup: any) => {
+        return {
+          ...paletteGroup,
+          content: paletteGroup.content.filter(
+            (label: any) => label.name?.search(regex) >= 0,
+          ),
+        };
+      },
+    );
+    // .filter((paletteGroup: any) => paletteGroup.content.length > 0); // Do not display an empty oaletteGroup?
+    setCurrentPaletteGroups(secondResultsFilter);
   };
 
   const addSelectedItem = (svgEvent: any) => {
@@ -297,7 +351,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   };
 
   const canvasContent = (props: any) => {
-    console.log(props);
+    // console.log(props);
     return (
       <Svg
         style={{flex: 1}}
@@ -325,8 +379,15 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   const renderLoader = () => {
     // console.log('Canvas is loading');
     return (
-      <View style={{}}>
-        <ActivityIndicator color={'grey'} size="large" style={{}} />
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'red',
+          justifyContent: 'center',
+          alignContent: 'center',
+          alignItems: 'center',
+        }}>
+        <ActivityIndicator color={'white'} size="large" style={{}} />
       </View>
     );
   };
@@ -406,7 +467,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
             {paletteGroup.categoryName ?? '[UNKNOWN]'}
           </Paragraph>
           <View style={styles.paletteGroupContent}>
-            {paletteGroup.content?.length &&
+            {paletteGroup.content.length > 0 &&
               paletteGroup.content.map((item: any, itemIndex: number) =>
                 renderPaletteGroupItem(
                   {item: item, index: itemIndex},
@@ -435,12 +496,13 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
               {...attrs}
             />
           )}
-          autoCorrect={false}
+          autoCorrect={true}
+          autoCapitalize={'characters'}
           data={currentPaletteGroups}
           placeholder="Filter damage types "
           defaultValue={filterQuery}
-          onContentSizeChange={() => openPaletteSearch()}
-          onChangeText={(text) => setFilterQuery(text)}
+          onContentSizeChange={async () => openPaletteSearch()}
+          onChangeText={async (text) => searchInPallette(text)}
           renderItem={renderPaletteGroup}
           keyExtractor={autoCompleteKeyExtractor}
           listStyle={{backgroundColor: 'transparent'}}
@@ -456,9 +518,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         ref={paletteRef}
         snapPoints={bottomSnapPoints}
         borderRadius={10}
-        onOpenStart={() => {
-          // query the palette list
-        }}
+        onOpenStart={initSearchPalette}
         initialSnap={closedSnapPoint}
         renderHeader={paletteHeader}
         renderContent={paletteContent}
