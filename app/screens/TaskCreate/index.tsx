@@ -165,10 +165,13 @@ export class TaskCreate extends React.Component<
 
   get vehicleIdentifierLabel() {
     // return the current selected vehicle identifier label
+    
     const items = vehicleIdentifiers.filter(
       (item) => item.value == this.formDetails.vehicleIdentifier,
     );
     return items.length ? items[0].label : undefined;
+    
+    // return this.formDetails.vehicleIdentifier
   }
 
   get headingTitle() {
@@ -337,9 +340,9 @@ export class TaskCreate extends React.Component<
     const uri = uriFromBase64(String(takenPhoto.base64), 'image/png'); // 'data:image/png;base64,' + takenPhoto.base64; // Todo: check what we be better, png or jpeg
     return formatImageSource({
       ...takenPhoto, // formatImgSourceFromTakenPhoto(takenPhoto), // formatImgSourceFromTakenPhoto(takenPhoto)
-      uri: uri,
       name: `Photo ${takenPhotoIndex}`, // Will be updated on submit to add the taken timestamp and the ID of the task or referenceNumber to prefix the name of the image
       annotations: [], // set the default annotations to [], Todo, call a predict API to help user by preloading annotations.
+      uri: uri,
     }) as TaskImage;
   };
 
@@ -507,6 +510,11 @@ export class TaskCreate extends React.Component<
                   onValueChange={(itemValue, itemIndex) =>
                     (this.setFormDetailsField = {vehicleContition: itemValue})
                   }>
+                    <Picker.Item
+                      key={'-1'}
+                      label={'Select an option'}
+                      value={undefined}
+                    />
                   {vehicleConditions.map((item, index) => (
                     <Picker.Item
                       key={index}
@@ -526,6 +534,11 @@ export class TaskCreate extends React.Component<
                   onValueChange={(itemValue, itemIndex) =>
                     (this.setFormDetailsField = {vehicleActivity: itemValue})
                   }>
+                    <Picker.Item
+                    key={'-1'}
+                    label={'Select an option'}
+                    value={undefined}
+                  />
                   {vehicleActivities.map((item, index) => (
                     <Picker.Item
                       key={index}
@@ -543,7 +556,7 @@ export class TaskCreate extends React.Component<
                 <ToggleButton.Row
                   style={styles.toggleButtonRow}
                   onValueChange={(itemValue) =>
-                    (this.setFormDetailsField = {vehicleIdentifier: itemValue})
+                    { if (itemValue) this.setFormDetailsField = {vehicleIdentifier: itemValue}}
                   }
                   value={this.formDetails.vehicleIdentifier ?? ''}>
                   {vehicleIdentifiers.map((item, key) => (
@@ -598,6 +611,11 @@ export class TaskCreate extends React.Component<
                   onValueChange={(itemValue, itemIndex) =>
                     (this.setFormField = {vehicleCleanliness: itemValue})
                   }>
+                     <Picker.Item
+                      key={'-1'}
+                      label={'Select an option'}
+                      value={undefined}
+                    />
                   {vehicleCleanlinesses.map((item, index) => (
                     <Picker.Item
                       key={index}

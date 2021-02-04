@@ -76,7 +76,12 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
 
   componentDidMount() {
     // load the annotations for the active item
-    if (!this.state.annotationsResults.length) this.handleOnSnapToItem(0);
+    try {
+      if (!this.state.annotationsResults.length) this.handleOnSnapToItem(0);
+    } catch (error) {
+      console.log('error loading image on mount', error);
+    }
+    
   }
 
   componentWillUnmount() {
@@ -84,7 +89,7 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
     Orientation.unlockAllOrientations();
   }
 
-  handleOnSnapToItem(listImageIndex: number) {
+  async handleOnSnapToItem(listImageIndex: number) {
     // load and display the annotations corresponding to the current activeIndex
     const currentImage: TaskImage = this.taskImages[listImageIndex];
 
@@ -157,12 +162,12 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
                           (annotation: any, itemIndex: number) => (
                             <Chip
                               key={itemIndex}
-                              mode={'flat'}
+                              mode={'outlined'}
                               style={styles.annotationLabelItem}
                               theme={theme}
                               selectedColor={
-                                annotationsResult.fallBackColor ??
-                                theme.colors.primary
+                                annotationsResult.fallBackColor && annotationsResult.fallBackColor != 'white' ?
+                                annotationsResult.fallBackColor : theme.colors.primary
                               }
                               icon={annotationsResult.fallBackIcon ?? 'square'}>
                               {annotation.label.name}
@@ -218,11 +223,11 @@ const styles = StyleSheet.create({
     color: theme.colors.secondary,
   },
   annotationLabelItem: {
-    borderWidth: 0.2,
+    borderWidth: 1,
     marginEnd: 1,
     marginTop: 1,
     borderColor: theme.colors.border,
-    backgroundColor: 'rgba(55, 71, 79, 0.7)', // theme.colors.secondary,
+    // backgroundColor: 'rgba(55, 71, 79, 0.7)', // theme.colors.secondary,
   },
   annotationsResultContainer: {
     paddingBottom: 20,

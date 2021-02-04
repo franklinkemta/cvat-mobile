@@ -147,7 +147,7 @@ export const Previewer = gestureHandlerRootHOC((props: any) => {
           alertMessage('Done !', 'Annotated saved in your gallery !')
         }
         saveToLocalByLongPress={false}
-        useNativeDriver={false}
+        useNativeDriver={true}
         enablePreload={true}
         onChange={handleImageChange}
         style={styles.canvasContainer}

@@ -373,7 +373,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         renderImage={canvasContent}
         enableSwipeDown={false}
         saveToLocalByLongPress={false}
-        useNativeDriver={false}
+        useNativeDriver={true}
         enablePreload={true}
         onClick={() => setFocusedItem(undefined)}
         onChange={handleImageChange}

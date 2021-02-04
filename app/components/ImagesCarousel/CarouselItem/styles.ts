@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   title: {
-    paddingHorizontal: 30,
+    marginTop: 10,
     backgroundColor: 'transparent',
     color: theme.colors.primary,
     fontSize: theme.titleFontSizeDefault, // 20

@@ -66,6 +66,7 @@ export class ImageCarousel extends React.Component<
         index={index}
         parallaxProps={parallaxProps}
         onTap={this._handleOnTapItem}
+        
       />
     );
   }
