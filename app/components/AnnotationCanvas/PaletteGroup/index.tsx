@@ -7,7 +7,7 @@ import {theme} from '/theme';
 // return if the current selected paletteItem is the current one rendering
 const checkIsSelected = (checkItem: any, selectedItem: any) => {
   // const selectedItem: any = selectedPaletteItem;
-  return selectedItem && selectedItem.item == checkItem;
+  return selectedItem && selectedItem.label.name == checkItem.name;
 };
 // TODO: Form draggable list before creating the palette group
 export const PaletteGroup = (props: any) => {
