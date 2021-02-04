@@ -50,8 +50,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
   },
   selectOption: {
-    backgroundColor: 'red',
-    height: '300',
+    height: 60,
     borderBottomWidth: theme.borderThin,
     borderBottomColor: theme.colors.border, // theme.colors.primary,
   },

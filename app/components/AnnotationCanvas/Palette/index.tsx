@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 0,
     top: 0,
+    bottom: 0,
   },
   autocompleteContainer: {
     // left: 0,
