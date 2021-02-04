@@ -45,58 +45,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: theme.colors.transparent,
   },
-
-  bottomSheetPaletteHeader: {
-    backgroundColor: theme.colors.surface,
-    justifyContent: 'center',
-    // borderTopColor: theme.colors.border,
-    // borderTopWidth: 5,
-  },
-
-  bottomSheetPaletteContent: {
-    backgroundColor: theme.colors.surface,
-    height: '100%',
-    borderRadius: 0,
-    top: 0,
-  },
-
-  autocompleteContainer: {
-    // left: 0,
-    backgroundColor: theme.colors.canvasBgDark,
-    // bottom: 0,
-    flex: 1,
-  },
-  autocompleteInputContainer: {
-    padding: 0,
-    alignSelf: 'stretch',
-    backgroundColor: 'red',
-  },
-
-  paletteGroupContainer: {
-    borderTopWidth: theme.borderThin,
-    borderTopColor: theme.colors.dark, // theme.colors.primary,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-  },
-  paletteGroupHeader: {
-    paddingVertical: 5,
-    fontWeight: 'bold',
-    fontSize: 12,
-    textAlign: 'left',
-  },
-  paletteGroupContent: {
-    flex: 1,
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    flexDirection: 'row',
-  },
-  paletteGroupItem: {
-    borderWidth: 0.2,
-    marginEnd: 1,
-    marginTop: 1,
-    borderColor: theme.colors.dark,
-  },
 });
 
 export default styles;

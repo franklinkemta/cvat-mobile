@@ -40,7 +40,7 @@ const DraggableItem = (props: any) => {
           <Line
             x1={draggableItem.origin.x} // - 5 + '%'
             y1={draggableItem.origin.y} // - 10 + '%'
-            x2={draggableItem.origin.x + draggableItem.origin.width} // - 5 + '%'
+            x2={draggableItem.origin.x + draggableItem.origin.width + 20} // - 5 + '%'
             y2={draggableItem.origin.y} // - 10 + '%'
             stroke={draggableItem.color}
             strokeWidth={isFocused ? 8 : 6}
