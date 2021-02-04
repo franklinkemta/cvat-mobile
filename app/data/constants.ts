@@ -71,7 +71,7 @@ export const paletteGroups = [
       {name: 'PAINT_PEELING'},
     ],
     fallBackForm: 'line', // path
-    fallBackColor: 'cyan',
+    fallBackColor: '#00e5ff', // blue
     fallBackIcon: 'minus',
   },
   {

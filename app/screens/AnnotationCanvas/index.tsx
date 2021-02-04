@@ -460,7 +460,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
 
     const autoCompleteRightIcon = () => (
       <TouchableOpacity onPress={clearPaletteFilters}>
-        <IconButton color="black" icon="close-circle" />
+        <IconButton color={theme.colors.dark} icon="close-circle" />
       </TouchableOpacity>
     );
 
@@ -532,11 +532,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
           containerStyle={styles.autocompleteContainer}
           inputContainerStyle={styles.autocompleteInputContainer}
           renderTextInput={(attrs: any) => (
-            <Searchbar
-              inputStyle={{padding: 0}}
-              clearIcon={autoCompleteRightIcon}
-              {...attrs}
-            />
+            <Searchbar clearIcon={autoCompleteRightIcon} {...attrs} />
           )}
           autoCorrect={true}
           autoCapitalize={'characters'}
@@ -549,7 +545,6 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
           keyExtractor={autoCompleteKeyExtractor}
           listStyle={{backgroundColor: 'transparent'}}
         />
-        <Text>Swipe down to close</Text>
       </View>
     );
 
@@ -564,6 +559,9 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         initialSnap={closedSnapPoint}
         renderHeader={paletteHeader}
         renderContent={paletteContent}
+        enabledHeaderGestureInteraction={true}
+        enabledContentGestureInteraction={false}
+        /* enabledContentTapInteraction={false} */
       />
     );
   };

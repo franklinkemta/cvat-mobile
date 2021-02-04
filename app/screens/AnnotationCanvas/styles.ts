@@ -54,24 +54,23 @@ const styles = StyleSheet.create({
   },
 
   bottomSheetPaletteContent: {
-    backgroundColor: theme.colors.transparent,
+    backgroundColor: theme.colors.surface,
     height: '100%',
     borderRadius: 0,
-    zIndex: 9999,
+    top: 0,
   },
 
   autocompleteContainer: {
+    // left: 0,
+    backgroundColor: theme.colors.canvasBgDark,
+    // bottom: 0,
     flex: 1,
-    alignSelf: 'stretch',
-    left: 0,
-    position: 'absolute',
-    backgroundColor: theme.colors.canvasBgLight,
-    height: '100%',
-    right: 0,
-    top: 0,
-    zIndex: 1,
   },
-  autocompleteInputContainer: {},
+  autocompleteInputContainer: {
+    padding: 0,
+    alignSelf: 'stretch',
+    backgroundColor: 'red',
+  },
 
   paletteGroupContainer: {
     borderTopWidth: theme.borderThin,

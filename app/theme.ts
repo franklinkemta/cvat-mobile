@@ -60,7 +60,7 @@ export const theme = {
     rippleDark: 'rgba(255,255,255,0.1)',
     transparent: 'rgba(0,0,0,0)', // or 'rgba(0,0,0,0.5)'
     canvasBg: 'papayawhip',
-    canvasBgDark: 'rgba(0,0,0,1)',
+    canvasBgDark: 'rgba(224,224,224,1)',
     canvasBgLight: 'rgba(255, 255, 255,0.95)',
   },
 };
