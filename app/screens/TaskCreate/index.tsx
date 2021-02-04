@@ -222,6 +222,13 @@ export class TaskCreate extends React.Component<
       );
       return false;
     }
+    if (!formDetails.vehicleCleanliness) {
+      alertMessage(
+        'Invalid vehicle cleanliness ',
+        'Please set the vehicle cleanliness',
+      );
+      return false;
+    }
     if (!form.images.length) {
       alertMessage(
         'Photos are required',
@@ -611,7 +618,7 @@ export class TaskCreate extends React.Component<
                   itemStyle={styles.selectOption}
                   style={styles.formSelect}
                   onValueChange={(itemValue, itemIndex) =>
-                    (this.setFormField = {vehicleCleanliness: itemValue})
+                    (this.setFormDetailsField = {vehicleCleanliness: itemValue})
                   }>
                      <Picker.Item
                       key={'-1'}
