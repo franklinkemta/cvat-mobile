@@ -47,26 +47,24 @@
   uri?: string;
   origin?: Coordinates;
   // other metas
+  annotations?: DraggableItem[];
 }
 
 // the canva receive a palette item(rn-svg) and let the user drag/or/drag it on the media, the
 type CanvasProps = {
   paletteTitle?: '', // e.g Vehicles parts .. Categories..etc..
-  initialPaletteGroups: PalleteGroup[]; // Stands for categories list
+  paletteGroups: PalleteGroup[]; // Stands for categories list
   mode?: 'blank' | 'black' | 'image'; // | 'video', // | 'camera'; // the type of video or image we're going to drag on // we prepare for the future version to drag while the flux is coming from camera stream
   transparent?: boolean; // weither the canvas backgroud is transparent or not
-  source: CanvasMedia;  // the media source to use as the board off the canvas
+  sources: CanvasMedia[];  // the media source to use as the board off the canvas
   canvasStyles?: any; // any style to apply to the canva container
   // zoomable?: boolean; // not impleted
-  onInsert?(): DraggableItem; // callback when an item is inserted in the canvas
-  onClose?(): void; // What to do when the canvas was closed // save
-  onSaveDump?(form: Array): DraggableItem[]; // Dump all the received items items back updated with their coordinates on the image, // will this trigger the on close even at the end?
-  initialItems?: DraggableItem[]; // when we load the canvas if we have initial drags
 };
 
 // canvas state  // can serve to definie the default state values
  type CanvasState = {
-  currentDrags?: DraggableItem[]; // will be dumped at the end of the draggs,
+  annotations?: DraggableItem[]; // will be dumped at the end of the draggs,
+  currentModifs: CanvasMedia[]; // store the current modifications
   focusedItemId?: number; // dragged item index
   focusedItem?: DraggableItem; // currentFocused item
   lastDraggedCordinates: DraggableItem[]; // when we drag an item, we push the change in the list, so the last draggedItem/focusedItem is the item at the length-1 of the list

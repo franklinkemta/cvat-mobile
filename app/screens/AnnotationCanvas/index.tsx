@@ -1,10 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
-  StyleSheet,
   Text,
   View,
-  Button,
-  Dimensions,
   BackHandler,
   // Image,
   // TouchableOpacity,
@@ -25,7 +22,6 @@ import {
   Appbar,
   Chip,
   IconButton,
-  List,
   Paragraph,
   Searchbar,
   TouchableRipple,
@@ -37,7 +33,10 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import {theme} from '/theme';
 import styles from './styles';
 import {DEVICE_HEIGHT, idFromUuid, TouchableOpacity} from '/utils';
+
 import DraggableItem from './DraggableItem';
+import {ArrowLeftButton, ArrowRightButton} from './ArrowButton';
+import {LoadingIndicator} from './LoadingIndicator';
 
 // Note that we wrap our app inside a gestureHandlerRootHOC, Read the docu. to learn more :) !
 export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
@@ -73,14 +72,24 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     Array, // paletteGroups
   ); // get the categories from the palettes initial value
 
-  const [annotations, setAnnotations] = useState(Array);
+  // all the modifications will be stored in this variable
+  const [currentImages, setCurrentImages] = useState(images);
+
+  // if the image already have annotations we load with them
+  const [annotations, setAnnotations] = useState(
+    images[initialIndex].annotations ?? Array,
+  ); // the annotations on the current image
+
   const [selectedPaletteGroupItem, setSelectedPaletteGroupItem] = useState(
     undefined,
   );
   const [focusedItem, setFocusedItem] = useState(undefined); // to handle double tap on each draggable item
+
   const getCurrentIndex = () => {
-    return imgViewerRef.current?.state.currentShowIndex;
+    return imgViewerRef.current?.state.currentShowIndex ?? initialIndex; // instead return initial
   };
+
+  const [currentIndex, setCurrentIndex] = useState(getCurrentIndex());
 
   // release hardware back button or not
   const releaseBackButton = (release: boolean) => {
@@ -94,20 +103,58 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   useEffect(() => {
     // prevent the hardware back button from going back without saved result
     releaseBackButton(false);
+    return releaseBackButton(true);
   });
 
-  const handleCanvasClose = () => {
-    releaseBackButton(true);
-    // call the on close
-    onClose();
-    navigation.goBack();
+  // store the current annotations on the corresponding image when the annotated image change
+  const updateImageAnnotations = async () => {
+    console.log('saving annotations at index...', currentIndex);
+    // update the annotations for the image at the current index
+    const currentImage = currentImages[currentIndex];
+    const updatedImage = {
+      ...currentImage,
+      annotations: annotations,
+    };
+    const updatedModifs = currentImages;
+    updatedModifs[currentIndex] = updatedImage;
+    setCurrentImages(updatedModifs);
   };
 
-  const handleCanvasSave = () => {
-    releaseBackButton(true);
-    // call the on save
-    onSaveDump();
-    navigation.goBack();
+  // load the annotation for the next image
+  const handleImageChange = async (nextIndex: number | undefined) => {
+    console.log(`image changed from ${currentIndex} to ${nextIndex}`);
+    if (nextIndex != undefined) {
+      // save the annotations of the current image first
+      await updateImageAnnotations();
+
+      const nextImage: any = currentImages[nextIndex] ?? undefined;
+
+      // load the next images annotations
+      if (nextImage != undefined) {
+        console.log('loading annotations for index...', nextIndex);
+        setAnnotations(nextImage.annotations ?? []);
+        // save the previous index
+        setCurrentIndex(nextIndex);
+      }
+    }
+  };
+
+  const handleCanvasClose = () => {
+    console.log('Cancel annotation');
+    // releaseBackButton(true);
+    navigation.navigate(route.params.previousScreen, {
+      updatedImages: [], // indicate that the annotation was canceled
+    });
+  };
+
+  const handleCanvasSave = async () => {
+    // releaseBackButton(true);
+    // save the annotations on the current images first
+    console.log('Save and exist');
+    await updateImageAnnotations();
+    navigation.navigate(route.params.previousScreen, {
+      updatedImages: currentImages,
+    });
   };
 
   const openPalette = () => {
@@ -156,11 +203,14 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     // we apply a second filter on the first result to return only the labels those match the filter query
     const secondResultsFilter: Array<any> = firstResultsFilter.map(
       (paletteGroup: any) => {
+        const filteredContent: [] = paletteGroup.content.filter(
+          (label: any) => label.name?.search(regex) >= 0,
+        );
         return {
           ...paletteGroup,
-          content: paletteGroup.content.filter(
-            (label: any) => label.name?.search(regex) >= 0,
-          ),
+          content: filteredContent.length
+            ? filteredContent
+            : paletteGroup.content,
         };
       },
     );
@@ -168,7 +218,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     setCurrentPaletteGroups(secondResultsFilter);
   };
 
-  const addSelectedItem = (svgEvent: any) => {
+  const addSelectedItem = async (svgEvent: any) => {
     // item: any, paletteGroupName: string
     // console.warn('SVG add item click event', svgEvent.nativeEvent);
     // console.log('layout', svgEvent.nativeEvent.layout);
@@ -190,9 +240,9 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     }
   };
 
-  const removeSelectedItem = () => {
+  const removeSelectedItem = async () => {
     // item: any, paletteGroupName: string
-    // console.warn('SVG remove item click event', svgItemEvent.nativeEvent);
+    // console.warn('SVG remove item click event');
     const draggableItem: any = focusedItem;
     setAnnotations(
       annotations.filter((item: any) => item.id != draggableItem.id),
@@ -200,8 +250,8 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     setFocusedItem(undefined); // clear focused item
   };
 
-  const moveSelectedItem = (svgItemEvent: any) => {
-    // console.warn('SVG move item click event', svgItemEvent.nativeEvent);
+  const moveSelectedItem = async (moveEvent: any) => {
+    // console.warn('SVG move item click event', moveEvent.nativeEvent);
     if (focusedItem != undefined) {
       const draggableItem: any = focusedItem;
       const width = draggableItem.origin.width;
@@ -210,22 +260,30 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
       const movedItem: any = {
         ...draggableItem,
         origin: {
-          x: svgItemEvent.nativeEvent.locationX,
-          y: svgItemEvent.nativeEvent.locationY,
+          x: moveEvent.nativeEvent.locationX,
+          y: moveEvent.nativeEvent.locationY,
           width: width, // zoomIN/OUT width
           height: height, // zoomIN/OUT height
         },
       };
+      const updatedAnnotations = annotations;
+      const movedIndex: number = updatedAnnotations.findIndex(
+        (item: any) => item.id == draggableItem.id,
+      );
+      updatedAnnotations[movedIndex] = movedItem;
+      setAnnotations(updatedAnnotations);
+      /*
       setAnnotations([
         ...annotations.filter((item: any) => item.id != draggableItem.id),
         movedItem,
       ]); // update the item at index
+      */
       setFocusedItem(movedItem);
     }
   };
 
-  const zoomSelectItem = (zoomRatio: number) => {
-    // console.warn('SVG zoom item click event', svgItemEvent.nativeEvent);
+  const zoomSelectItem = async (zoomRatio: number) => {
+    // console.warn('SVG zoom item click event');
     if (focusedItem != undefined) {
       // console.log('moving');
       const draggableItem: any = focusedItem;
@@ -251,10 +309,10 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
 
   // return the  current current index/totalCount for the header // formated to display (A/B)
   const getHeaderTitle = () => {
-    const currentIndex = getCurrentIndex();
-    if (currentIndex != undefined) {
+    const index = getCurrentIndex();
+    if (index != undefined) {
       const itemsCount: number = images.length;
-      return `${currentIndex + 1}/${itemsCount}`;
+      return `${index + 1}/${itemsCount}`;
     } else return '';
   };
 
@@ -290,18 +348,19 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         <Appbar.Action
           icon="plus-circle-outline"
           size={30}
-          onPress={() => zoomSelectItem(ZoomRatio)}
+          onPress={async () => zoomSelectItem(ZoomRatio)}
           color={theme.colors.border}></Appbar.Action>
         <Appbar.Action
           icon="minus-circle-outline"
           size={30}
-          onPress={() => zoomSelectItem(-ZoomRatio)}
+          onPress={async () => zoomSelectItem(-ZoomRatio)}
           color={theme.colors.border}></Appbar.Action>
         <Appbar.Action
           icon="close-circle-outline"
           size={30}
-          onPress={() => setFocusedItem(undefined)}
-          onLongPress={removeSelectedItem}
+          /* onPress={() => setFocusedItem(undefined)}*/
+          /* onLongPress={removeSelectedItem} */
+          onPress={removeSelectedItem}
           color={theme.colors.border}></Appbar.Action>
       </Appbar>
     );
@@ -358,7 +417,6 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         fill="transparent"
         onTouchStart={addSelectedItem}
         onTouchMove={moveSelectedItem}
-        onPress={() => {}}
         onTouchEnd={() => {
           setSelectedPaletteGroupItem(undefined);
         }}>
@@ -373,22 +431,6 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
           renderDraggableItem(draggableItem, index),
         )}
       </Svg>
-    );
-  };
-
-  const renderLoader = () => {
-    // console.log('Canvas is loading');
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: 'red',
-          justifyContent: 'center',
-          alignContent: 'center',
-          alignItems: 'center',
-        }}>
-        <ActivityIndicator color={'white'} size="large" style={{}} />
-      </View>
     );
   };
 
@@ -511,7 +553,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
       </View>
     );
 
-    // console.log(images[0]?.width);
+    // console.log(currentImages[0]?.width);
 
     return (
       <BottomSheet
@@ -526,14 +568,18 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
     );
   };
   // return the ImgageViewer Configured as the canvas with the palette
+  // const singleImage = [currentImages[initialIndex]];
   return (
     <SafeAreaView style={{flex: 1}}>
       <ImageViewer
         ref={imgViewerRef}
         imageUrls={images}
         index={initialIndex}
-        loadingRender={renderLoader}
+        loadingRender={() => <LoadingIndicator />}
         renderIndicator={() => <></>}
+        renderArrowLeft={() => <ArrowLeftButton />}
+        renderArrowRight={() => <ArrowRightButton />}
+        // pageAnimateTime={0}
         renderHeader={canvasHeader}
         renderFooter={canvasFooter}
         renderImage={canvasContent}
@@ -541,7 +587,9 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         onSwipeDown={onClose}
         saveToLocalByLongPress={false}
         useNativeDriver={false}
-        enablePreload={false}
+        enablePreload={true}
+        onClick={() => setFocusedItem(undefined)}
+        onChange={handleImageChange}
         style={styles.canvasContainer}
         footerContainerStyle={styles.canvasFooterContainerStyles}
       />

@@ -32,7 +32,6 @@ import styles from './styles';
 // import utils
 import {
   idFromDateAndPrefix,
-  formatImagesSources,
   idFromUuid,
   formatImageSource,
   uriFromBase64,
@@ -103,6 +102,7 @@ export class TaskCreate extends React.Component<
     images: [
       {
         metas: {name: 'Image 4'},
+        // annotations: [],
         url:
           'https://prod.pictures.autoscout24.net/listing-images/5883fd5d-84de-4a46-9039-b8a0dc3627e6_3cdf9e4b-ae17-4a4b-8e2a-c3ef53e65842.jpg/640x480.jpg',
       },
@@ -137,6 +137,19 @@ export class TaskCreate extends React.Component<
       this.setState({showFAB: true}); // show fab
 
       takenPhotos.forEach(this.handleTakenPhoto);
+    }
+
+    // check if the form image was updates
+    if (routeParams?.updatedImages != undefined) {
+      const updatedImages: TaskImage[] = routeParams.updatedImages;
+      if (updatedImages.length) {
+        // images annotations was saved by the user
+        this.handleAnnotatedImages(updatedImages);
+      } else {
+        // images annotation was cancelled by the user
+        this.handleAnnotationCancel();
+      }
+      this.props.navigation.setParams({updatedImages: undefined}); // prevent from updating again
     }
   }
 
@@ -228,22 +241,22 @@ export class TaskCreate extends React.Component<
 
     navigation.navigate(AppRoutes.ANNOTATION_CANVAS, {
       images: this.state.images,
-      onClose: this.handleAnnotationCanvasClosed,
-      onSaveDump: this.handleSaveDumpedAnnotations,
       initialIndex: this.state.listImageIndex,
       paletteGroups: paletteGroups,
       paletteTitle: 'Select a damage marker',
+      previousScreen: AppRoutes.TASK_CREATE,
     });
   };
 
-  handleAnnotationCanvasClosed = () => {
-    console.log('Annotation closed');
+  handleAnnotationCancel = () => {
+    console.log('Annotation canceled');
     this.previewGridRef.current?.setState({modalVisible: true});
   };
 
-  handleSaveDumpedAnnotations = () => {
-    console.log('Finished annotating');
+  handleAnnotatedImages = (updatedImages: TaskImage[]) => {
+    console.log('Finished annotating the images');
     this.previewGridRef.current?.setState({modalVisible: true});
+    this.setState({images: updatedImages});
   };
 
   formatTakenPhoto = (takenPhoto: CameraImage): TaskImage => {
