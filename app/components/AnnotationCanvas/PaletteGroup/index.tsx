@@ -20,13 +20,13 @@ export const PaletteGroup = (props: any) => {
         {paletteGroup.categoryName ?? '[UNKNOWN]'}
       </Paragraph>
       <View style={styles.paletteGroupContent}>
-        {paletteGroup.content.length > 0 &&
-          paletteGroup.content.map((item: any, itemIndex: number) => (
+        {paletteGroup.labels.length > 0 &&
+          paletteGroup.labels.map((label: any, labelIndex: number) => (
             <PaletteItem
-              key={itemIndex}
-              item={item}
+              key={labelIndex}
+              label={label}
               paletteGroup={paletteGroup}
-              isSelected={checkIsSelected(item, selectedPaletteItem)}
+              isSelected={checkIsSelected(label, selectedPaletteItem)}
               onPress={onItemPress}
             />
           ))}

@@ -4,12 +4,6 @@ declare type User = {
   organisation?: any;
 };
 
-declare type ImageAnnotation = {
-  annotationType?: number; // refers to index in ['DORT_FRONT_LEFT', 'DORT_FRONT_RIGHT','CUSTOM_TYPE', ...]
-  customAnnotationTypeName?: string; // annotationType will set to CUSTOM_TYPE in this case
-  labels: string[]; // DENT, SCRATCH ... // all labels atached to the annotation
-};
-
 declare interface BaseImage {
   uri?: string;
   height?: number;
@@ -29,7 +23,7 @@ declare type CameraImage = BaseImage & {
 // We will use TaskImage as default image type inside our application when we will need to deal with tasks images
 declare interface TaskImage extends CameraImage {
   // id?: string;
-  metas?: string | object; // all metas to describe the TasKImage like, Timestamp, createdDate, File size, extension and more..
+  name?: string; // all metas to describe the TasKImage like, Timestamp, createdDate, File size, extension and more..
   annotations?: ImageAnnotation[]; // optional ?
 }
 
@@ -47,11 +41,11 @@ declare type TaskDetails = {
 declare interface TaskResult {}
 
 declare type Task = {
-  id: string;
-  author: User;
-  name: string;
+  id?: string;
+  author?: User;
+  name?: string;
   completed?: boolean;
-  createDate: string;
+  createDate?: string;
   updateDate?: string;
   details?: TaskDetails; // PS: Could change in future versions, becoming an array of TaskDetails
   images: TaskImage[];

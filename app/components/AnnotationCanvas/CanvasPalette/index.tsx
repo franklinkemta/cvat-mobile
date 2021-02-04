@@ -81,10 +81,11 @@ export class CanvasPalette extends React.PureComponent<
   };
 
   initSearchPalette = async () => {
-    console.log('init search palette');
     // query the palette list
-    if (!this.state.currentPaletteGroups.length)
+    if (!this.state.currentPaletteGroups.length) {
+      console.log('init search palette');
       this.setState({currentPaletteGroups: this.props.paletteGroups});
+    }
   };
 
   closePalette = () => {
@@ -111,7 +112,7 @@ export class CanvasPalette extends React.PureComponent<
     const firstResultsFilter: Array<any> = this.props.paletteGroups.filter(
       (paletteGroup: any) =>
         paletteGroup.categoryName?.search(regex) >= 0 ||
-        paletteGroup.content.filter(
+        paletteGroup.labels.filter(
           (label: any) => label.name?.search(regex) >= 0,
         ).length > 0,
     );
@@ -119,18 +120,18 @@ export class CanvasPalette extends React.PureComponent<
     // we apply a second filter on the first result to return only the labels those match the filter query
     const secondResultsFilter: Array<any> = firstResultsFilter.map(
       (paletteGroup: any) => {
-        const filteredContent: [] = paletteGroup.content.filter(
+        const filteredContent: [] = paletteGroup.labels.filter(
           (label: any) => label.name?.search(regex) >= 0,
         );
         return {
           ...paletteGroup,
           content: filteredContent.length
             ? filteredContent
-            : paletteGroup.content,
+            : paletteGroup.labels,
         };
       },
     );
-    // .filter((paletteGroup: any) => paletteGroup.content.length > 0); // Do not display an empty oaletteGroup?
+    // .filter((paletteGroup: any) => paletteGroup.labels.length > 0); // Do not display an empty oaletteGroup?
     this.setState({currentPaletteGroups: secondResultsFilter});
   };
 
@@ -152,6 +153,7 @@ export class CanvasPalette extends React.PureComponent<
         data={this.state.currentPaletteGroups}
         placeholder="Filter damage types "
         defaultValue={this.state.filterQuery}
+        autoFocus={true}
         onContentSizeChange={async () => this.openPaletteSearch()}
         onChangeText={async (text) => this.searchInPallette(text)}
         renderItem={this.renderPaletteGroup}
@@ -202,6 +204,14 @@ const styles = StyleSheet.create({
   },
   autocompleteInputContainer: {
     padding: 0,
+    margin: 0,
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    alignContent: 'stretch',
     alignSelf: 'stretch',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
 });

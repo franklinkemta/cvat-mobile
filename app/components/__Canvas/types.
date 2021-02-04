@@ -12,13 +12,12 @@
 
  class DraggableItem {
   id?: string; // required to select and know the item that was tappped / selected
-  item?: any; // the item that will be returned back  with the result after the drag, // we'll use it to store ids, or indexes
-  paletteIndex: number; // we save the paletted index so that we can group the dumps by categories, e.g DORT_FRONT_LEFT [ 'DENT', 'SCRATCH' ]
+  label?: any; // the item that will be returned back  with the result after the drag, // we'll use it to store ids, or indexes
+  paletteGroupId: string; // we save the paletted id so that we can group the dumps by categories, e.g DORT_FRONT_LEFT [ 'DENT', 'SCRATCH' ]
   currentlyAt?: Coordinates; // updated during the drag
   draggedAt?: Coordinates; //  returned when we dump the drags
   origin?: Coordinates; // Set when we load the drag with existing value of draggedAt. // i can serve to check if there were changes after drags
   svgForm?: 'square' | 'circle' | 'polygon' | 'text' // | 'sketch'; // the selected react native svg to use,// i nothing is specified a default will be text // sketch here stands for free drag, but we won't implement it for now
-  label?: string; // the label to display at the top of the svg, DENT, SCRATCH, just for example
   color?: string; // the border color or the svg, // example white for tagging BBOX [ ]
   fill?: string; // the background color to fille the svg, // example rgba white with opacity
   svgStyles?: object; // a generic style to apply on the item svg form
@@ -35,6 +34,7 @@
    when we will build our Draggable items, all those items, will become the item attribute of DraggableItem
 */
  type PalleteGroup = {
+  id: string;
   categoryName: string; // Exemple : DORT FRONT LEFT || PORTIERE AVANT || PARECHOC ARRIERE etc.. // the palleteName is a kindof primary key
   description?: string; // any other description to display
   content: string[];

@@ -1,5 +1,5 @@
 declare type CarouselItemProps = {
-  metas?: string | any; // title or others
+  name?: string; // title or others
   url: string; // check if it needa be string
   index: number;
   parallaxProps: any | undefined;

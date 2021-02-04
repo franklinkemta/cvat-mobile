@@ -10,7 +10,7 @@ export const tasks: Omit<Task, 'onPress'>[] = [
     name: 'ANNOTATION : Renault Clio Estate 1.5 dCi 85 eco2 Dynamique',
     images: [
       {
-        metas: {name: 'Exterieur'},
+        name: 'Exterieur',
         annotations: [
           {
             customAnnotationTypeName: 'FRONT RIGHT',
@@ -25,22 +25,22 @@ export const tasks: Omit<Task, 'onPress'>[] = [
           'https://prod.pictures.autoscout24.net/listing-images/5883fd5d-84de-4a46-9039-b8a0dc3627e6_3cdf9e4b-ae17-4a4b-8e2a-c3ef53e65842.jpg/640x480.jpg',
       },
       {
-        metas: 'Arriere',
+        name: 'Arriere',
         uri:
           'https://prod.pictures.autoscout24.net/listing-images/5883fd5d-84de-4a46-9039-b8a0dc3627e6_a2126b37-4946-4fc6-8895-5e634e867e96.jpg/640x480.jpg',
       },
       {
-        metas: {name: 'Sieges'},
+        name: 'Sieges',
         uri:
           'https://prod.pictures.autoscout24.net/listing-images/5883fd5d-84de-4a46-9039-b8a0dc3627e6_e0ce4bf0-d010-4085-bb2e-fa879044d33c.jpg/640x480.jpg',
       },
       {
-        metas: {name: 'Tableau de bord'},
+        name: 'Tableau de bord',
         uri:
           'https://prod.pictures.autoscout24.net/listing-images/5883fd5d-84de-4a46-9039-b8a0dc3627e6_4c3467c6-c22b-4459-ab21-eb51d23a5826.jpg/640x480.jpg',
       },
       {
-        metas: 'Sieges passager',
+        name: 'Sieges passager',
         uri:
           'https://prod.pictures.autoscout24.net/listing-images/5883fd5d-84de-4a46-9039-b8a0dc3627e6_a60a1719-01d8-4735-811a-80baa22c2ae8.jpg/640x480.jpg',
       },
@@ -54,7 +54,7 @@ export const tasks: Omit<Task, 'onPress'>[] = [
     name: 'Annotation Carefour Bahmad',
     images: [
       {
-        metas: {name: 'Image 1'},
+        name: 'Image 1',
         annotations: [
           {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
           {
@@ -65,15 +65,15 @@ export const tasks: Omit<Task, 'onPress'>[] = [
         uri: 'https://www.marocannonces.com/user_images/314/4281329.jpg',
       },
       {
-        metas: {name: 'Image 21'},
+        name: 'Image 21',
         uri: 'https://www.marocannonces.com/user_images/314/1911177.jpg',
       },
       {
-        metas: {name: 'Image 22'},
+        name: 'Image 22',
         uri: 'https://www.marocannonces.com/user_images/314/6775813.jpg',
       },
       {
-        metas: {name: 'Image 23'},
+        name: 'Image 23',
         uri: 'https://www.marocannonces.com/user_images/314/6083850.jpg',
       },
     ],
@@ -88,12 +88,12 @@ export const tasks: Omit<Task, 'onPress'>[] = [
     name: 'Annotation Casa Port - Parking',
     images: [
       {
-        metas: {name: 'Image 3'},
+        name: 'Image 3',
         uri:
           'https://www.moteur.ma/media/photos/ads/resized/kia-sportage-631317.JPG',
       },
       {
-        metas: {name: 'Image 4'},
+        name: 'Image 4',
         uri:
           'https://www.moteur.ma/media/photos/ads/resized/kia-sportage-873425.JPG',
       },
@@ -107,7 +107,7 @@ export const tasks: Omit<Task, 'onPress'>[] = [
 // dummies images
 export const images = [
   {
-    metas: {name: 'Image 1'},
+    name: 'Image 1',
     annotations: [
       {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
       {
@@ -118,7 +118,7 @@ export const images = [
     url: 'https://source.unsplash.com/1600x900/?bus,travel',
   },
   {
-    metas: {name: 'Image 1'},
+    name: 'Image 1',
     annotations: [
       {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
       {
@@ -129,7 +129,7 @@ export const images = [
     url: 'https://source.unsplash.com/1600x900/?bus,travel',
   },
   {
-    metas: {name: 'Image 1'},
+    name: 'Image 1',
     annotations: [
       {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
       {
@@ -140,7 +140,7 @@ export const images = [
     url: 'https://source.unsplash.com/1600x900/?bus,travel',
   },
   {
-    metas: {name: 'Image 1'},
+    name: 'Image 1',
     annotations: [
       {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
       {
@@ -151,7 +151,7 @@ export const images = [
     url: 'https://source.unsplash.com/1600x900/?bus,travel',
   },
   {
-    metas: {name: 'Image 1'},
+    name: 'Image 1',
     annotations: [
       {customAnnotationTypeName: 'DOOR FRONT LEFT', labels: ['SCRATCH']},
       {

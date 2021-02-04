@@ -27,43 +27,21 @@ export const annotationLabels = ['DENT', 'MISSING_PIECE', 'SCRATCH', 'BROKEN'];
 
 export const carouselImages: TaskImage[] = [];
 
-/*
-export const paletteGroups = [
+// Damage Category based paletteGroups
+export const damageTypes = [
   {
-    categoryName: 'DORT FRONT LEFT',
-    description: '',
-    content: ['DENT', 'MISSING PIECE', 'DENT', 'SCRATCH', 'DENT', 'DIRT'],
-    fallBackForm: 'circle',
-  },
-  {
-    categoryName: 'PARRE BRISE',
-    content: ['BROKEN', 'UNKNOWN', 'DENT', 'SCRATCH', 'DENT', 'DIRT'],
-  },
-  {
-    categoryName: 'FRONT RIGHT',
-    content: ['BROKEN', 'UNKNOWN'],
-  },
-  {
-    categoryName: 'PARRECHOC ARRIERE',
-    content: ['BROKEN', 'UNKNOWN'],
-    fallBackForm: 'circle',
-  },
-];
-*/
-
-// Damage Category based
-export const paletteGroups = [
-  {
+    id: '0',
     categoryName: 'IMPACT LABELS',
     description: '',
-    content: [{name: 'DENT'}, {name: 'BODY_CRACK'}, {name: 'MISSHAPE'}],
+    labels: [{name: 'DENT'}, {name: 'BODY_CRACK'}, {name: 'MISSHAPE'}],
     fallBackForm: 'circle',
     fallBackColor: 'orange',
     fallBackIcon: 'circle',
   },
   {
+    id: '1',
     categoryName: 'PAINT LABELS',
-    content: [
+    labels: [
       {name: 'SCRATCH'},
       {name: 'GROUP_OF_SCRATCHES'},
       {name: 'SCATTERED_SCRATCHES'},
@@ -75,8 +53,9 @@ export const paletteGroups = [
     fallBackIcon: 'minus',
   },
   {
+    id: '2',
     categoryName: 'ELEMENT LABELS',
-    content: [
+    labels: [
       {name: 'MISSING_PIECE'},
       {name: 'MISSING_HUBCAP'},
       {name: 'HUBCAP_SCRATCH'},
@@ -88,8 +67,9 @@ export const paletteGroups = [
     fallBackIcon: 'selection-ellipse',
   },
   {
+    id: '3',
     categoryName: 'COMMON LABELS',
-    content: [
+    labels: [
       {name: 'SMASH'},
       {name: 'NOT_DEFINED'},
       {name: 'LIGHT_REFLECTIONS'},
@@ -101,3 +81,55 @@ export const paletteGroups = [
     fallBackIcon: 'selection-drag', // square
   },
 ];
+
+// Vehicle parts category based palette groups
+export const vehiclesParts = [
+  {
+    id: '4',
+    categoryName: 'DORT FRONT LEFT',
+    description: '',
+    labels: [
+      {name: 'DENT'},
+      {name: 'MISSING PIECE'},
+      {name: 'SCRATCH'},
+      {name: 'DIRT'},
+    ],
+    fallBackForm: 'square',
+    fallBackColor: 'white',
+    fallBackIcon: 'square',
+  },
+  {
+    id: '5',
+    categoryName: 'PARRE BRISE',
+    description: '',
+    labels: [
+      {name: 'BROKEN'},
+      {name: 'UNKNOWN'},
+      {name: 'SCRATCH'},
+      {name: 'DIRT'},
+    ],
+    fallBackForm: 'square',
+    fallBackColor: 'white',
+    fallBackIcon: 'square',
+  },
+  {
+    id: '6',
+    categoryName: 'FRONT RIGHT',
+    description: '',
+    labels: [{name: 'BROKEN'}, {name: 'UNKNOWN'}],
+    fallBackForm: 'square',
+    fallBackColor: 'white',
+    fallBackIcon: 'square',
+  },
+  {
+    id: '7',
+    categoryName: 'PARRECHOC ARRIERE',
+    description: '',
+    labels: [{name: 'BROKEN'}, {name: 'UNKNOWN'}],
+    fallBackForm: 'square',
+    fallBackColor: 'white',
+    fallBackIcon: 'square',
+  },
+];
+
+export const paletteGroups = [...damageTypes, ...vehiclesParts];

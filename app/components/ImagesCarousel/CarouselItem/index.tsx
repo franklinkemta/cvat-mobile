@@ -6,14 +6,14 @@ import {ParallaxImage} from 'react-native-snap-carousel';
 
 import styles from './styles';
 
-function getItemTitle(metas: any, index: number) {
-  if (typeof metas == 'string') return metas;
-  else return metas.name ?? index;
+function getItemTitle(name: any, index: number) {
+  // return name ?? index;
+  return `Photo ${index + 1}`;
 }
 
 export const CarouselItem = (props: CarouselItemProps): React.ReactElement => {
   const theme = useTheme();
-  const {url, metas, index, parallaxProps} = props;
+  const {url, name, index, parallaxProps} = props;
   return (
     <TouchableRipple
       rippleColor={theme.colors.ripple}
@@ -29,7 +29,7 @@ export const CarouselItem = (props: CarouselItemProps): React.ReactElement => {
           {...parallaxProps}
         />
         <Text style={styles.title} numberOfLines={2}>
-          {getItemTitle(metas, index)}
+          {getItemTitle(name, index)}
         </Text>
       </View>
     </TouchableRipple>

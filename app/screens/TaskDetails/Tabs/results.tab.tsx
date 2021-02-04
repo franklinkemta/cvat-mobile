@@ -10,6 +10,7 @@ import {theme} from '/theme';
 
 // import utils
 import {formatImagesSources} from '/utils';
+import {paletteGroups} from '/data';
 
 // todo implement store
 // import {taskImages} from '/data';
@@ -18,8 +19,8 @@ type ResultTabProps = {
   navigation?: any;
 };
 type ResultTabState = {
-  taskImages: TaskImage[];
-  annotations: ImageAnnotation[] | undefined;
+  task: Task;
+  annotationsResults: any[];
   listExpanded: boolean;
 };
 
@@ -40,13 +41,13 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
     this.handleListItemPress = this.handleListItemPress.bind(this);
 
     // get the taskImages images from the route params sent by the TaskDetail parent
-    const task: Task = {...route.params};
-    const images: TaskImage[] = task.images ?? []; // tasks
+    //const task:
+    //const images: TaskImage[] = task.images ?? []; // tasks
 
     // define the initial state
     this.state = {
-      taskImages: images,
-      annotations: undefined,
+      task: {...route.params},
+      annotationsResults: [],
       listExpanded: false,
     };
 
@@ -69,7 +70,7 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
 
   componentDidMount() {
     // load the annotations for the active item
-    if (!this.state.annotations) this.handleOnSnapToItem(0);
+    if (!this.state.annotationsResults) this.handleOnSnapToItem(0);
   }
 
   componentWillUnmount() {
@@ -82,15 +83,31 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
     // console.log('index', listImageIndex);
 
     // load and display the annotations corresponding to the current activeIndex
-    const currentTaskImage: TaskImage = this.taskImages[listImageIndex];
+    const currentImage: TaskImage = this.taskImages[listImageIndex];
 
-    // console.log(currentTaskImage);
+    // console.log(currentImage);
     // update the annotations list
 
+    // console.log('TaskImages', this.taskImages);
+    const annotations: any[] = currentImage.annotations || [];
+    // console.log(annotations);
+    const annotationsResults = paletteGroups.map((paletteGroup) => {
+      const results = annotations.filter(
+        (annotation: any) => annotation.paletteGroupId == paletteGroup.id,
+      );
+      // console.log(results.length);
+      return {
+        ...paletteGroup,
+        labels: results,
+      };
+    });
+
+    // console.log(annotationsResults);
+
     this.setState({
-      annotations: currentTaskImage.annotations
-        ? currentTaskImage.annotations
-        : [],
+      annotationsResults: annotationsResults.filter(
+        (result) => result.labels.length > 0,
+      ), // Do not show empty category
     });
     // Todo : Test annotations before assigning to the state.annotations
 
@@ -104,23 +121,19 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
 
   // some getters and setters that we want to override
   get taskImages() {
-    return this.state.taskImages;
+    return this.state.task.images as TaskImage[];
   }
 
   get listExpanded() {
     return this.state.listExpanded;
   }
 
-  set taskImages(taskImages: TaskImage[]) {
-    this.setState({taskImages});
-    console.error(taskImages);
-  }
   set listExpanded(listExpanded: boolean) {
     this.setState({listExpanded});
   }
 
   render() {
-    console.log('TaskImages', this.taskImages);
+    const annotationsResults = this.state.annotationsResults;
     return (
       <ScrollView style={styles.scrollview}>
         <ImageCarousel
@@ -132,33 +145,39 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
         />
         <Divider style={styles.divider} />
         <View style={styles.listContainer}>
-          {this.state.annotations && this.state.annotations.length ? (
+          {annotationsResults && annotationsResults.length ? (
             <List.Section
               title="Annotations on this Image"
               titleStyle={styles.listTitle}>
-              {this.state.annotations.map((annotationItem, index) => (
-                <List.Accordion
-                  key={index}
-                  style={styles.listAccordion}
-                  title={annotationItem.customAnnotationTypeName}
-                  left={(props) => (
-                    <List.Icon {...props} icon="square" style={{width: 12}} />
-                  )}>
-                  {annotationItem.labels.map((label, jindex) => (
-                    <List.Item
-                      key={jindex}
-                      title={label}
-                      style={styles.listItem}
-                    />
-                  ))}
-                </List.Accordion>
-              ))}
+              {annotationsResults.map(
+                (annotationsResult: any, index: number) => (
+                  <List.Accordion
+                    key={index}
+                    style={styles.listAccordion}
+                    title={annotationsResult.categoryName}
+                    left={(props) => (
+                      <List.Icon {...props} icon="square" style={{width: 12}} />
+                    )}>
+                    {annotationsResult.labels.map(
+                      (annotation: any, itemIndex: number) => (
+                        <List.Item
+                          key={itemIndex}
+                          title={annotation.label.name}
+                          style={styles.listItem}
+                        />
+                      ),
+                    )}
+                  </List.Accordion>
+                ),
+              )}
             </List.Section>
           ) : (
-            <ActivityIndicator
-              hidesWhenStopped={true}
-              style={styles.activityIndicator}
-            />
+            <View
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={styles.noAnnotationsText}>
+                This photo does not have any annotation !
+              </Text>
+            </View>
           )}
         </View>
       </ScrollView>
@@ -196,5 +215,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgrey',
     marginVertical: 12,
     marginTop: 20,
+  },
+  noAnnotationsText: {
+    fontStyle: 'italic',
+    fontWeight: 'bold',
+    color: theme.colors.secondary,
   },
 });

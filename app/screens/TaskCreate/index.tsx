@@ -15,6 +15,8 @@ import {Picker} from '@react-native-picker/picker';
 // import our custom preview grid package
 import PreviewGrid from 'react-native-preview-images';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // import vectors icons for tabs
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -68,6 +70,7 @@ interface TaskFormState extends Task {
   scrolling?: boolean;
   scrollIsTop?: boolean;
   listImageIndex?: number;
+  loading?: boolean;
 }
 
 export class TaskCreate extends React.Component<
@@ -79,18 +82,11 @@ export class TaskCreate extends React.Component<
   state = {
     showFAB: true,
     scrolling: false,
+    loading: false,
     scrollIsTop: true,
     listImageIndex: 0,
     annotationCanvasModal: false,
-    id: idFromUuid(), // Generate unique ID for the task
-    author: {
-      id: idFromUuid(),
-      name: 'Me',
-    }, // Todo: Get the current user
-    completed: undefined,
     name: '',
-    createDate: '',
-    updateDate: '',
     details: {
       vehicleContition: undefined,
       vehicleActivity: undefined,
@@ -99,14 +95,7 @@ export class TaskCreate extends React.Component<
       vehicleReferenceNumber: undefined,
       vehicleCleanliness: undefined,
     },
-    images: [
-      {
-        metas: {name: 'Image 4'},
-        // annotations: [],
-        url:
-          'https://prod.pictures.autoscout24.net/listing-images/5883fd5d-84de-4a46-9039-b8a0dc3627e6_3cdf9e4b-ae17-4a4b-8e2a-c3ef53e65842.jpg/640x480.jpg',
-      },
-    ],
+    images: [],
   };
 
   constructor(props: TaskCreateProps) {
@@ -149,7 +138,8 @@ export class TaskCreate extends React.Component<
         // images annotation was cancelled by the user
         this.handleAnnotationCancel();
       }
-      this.props.navigation.setParams({updatedImages: undefined}); // prevent from updating again
+      // prevent from updating again
+      this.props.navigation.setParams({updatedImages: undefined});
     }
   }
 
@@ -182,8 +172,62 @@ export class TaskCreate extends React.Component<
   }
 
   get headingTitle() {
-    return this.form.name ?? undefined;
+    return this.state.name ?? '';
   }
+
+  // reset form fieds
+  isFormValid = (): boolean => {
+    console.log('Validating form data');
+    const form = this.form;
+    const formDetails = this.formDetails;
+    if (!form.name) {
+      console.log('Invalid name');
+      return false;
+    }
+    if (!formDetails.vehicleContition) {
+      console.log('Invalid vehicleContition');
+      return false;
+    }
+    if (!formDetails.vehicleActivity) {
+      console.log('Invalid vehicleActivity');
+      return false;
+    }
+    if (!formDetails.vehicleIdentifier) {
+      console.log('Invalid vehicleIdentifier');
+      return false;
+    }
+    if (!formDetails.vehicleIdentifierVal) {
+      console.log('Invalid vehicleIdentifierVal');
+      return false;
+    }
+    if (!formDetails.vehicleReferenceNumber) {
+      console.log('Invalid vehicleReferenceNumber');
+      return false;
+    }
+    if (!form.images.length) {
+      console.log('No images, no taken photos');
+      return false;
+    }
+    return true;
+  };
+
+  // reset form fieds
+  clearForm = () => {
+    console.log('Clearing form data');
+    this.setState({
+      listImageIndex: 0,
+      name: '',
+      images: [],
+      details: {
+        vehicleContition: undefined,
+        vehicleActivity: undefined,
+        vehicleIdentifier: undefined,
+        vehicleIdentifierVal: undefined,
+        vehicleCleanliness: undefined,
+        vehicleReferenceNumber: idFromDateAndPrefix(), // create a new vehicle reference number
+      },
+    });
+  };
 
   // open camera view to take photos snap, each taken photo will be returned by a callback
   openCameraDefault = () => {
@@ -261,20 +305,20 @@ export class TaskCreate extends React.Component<
 
   formatTakenPhoto = (takenPhoto: CameraImage): TaskImage => {
     // format takenPhoto to a Task image format and add to the task form.images[] in the state
-    const takenPhotoIndex: number = this.form.images.length;
+    const takenPhotoIndex: number = this.form.images.length + 1;
     // console.log('TakenPhoto number', takenPhotoIndex);
     // As we used base64 option to true, we need to provid a new uri from base64 to other to display our image properly in the PreviewGrid
     const uri = uriFromBase64(String(takenPhoto.base64), 'image/png'); // 'data:image/png;base64,' + takenPhoto.base64; // Todo: check what we be better, png or jpeg
     return formatImageSource({
       ...takenPhoto, // formatImgSourceFromTakenPhoto(takenPhoto), // formatImgSourceFromTakenPhoto(takenPhoto)
       uri: uri,
-      metas: {name: `${takenPhotoIndex}`}, // Will be updated on submit to add the taken timestamp and the ID of the task or referenceNumber to prefix the name of the image
+      name: `Photo ${takenPhotoIndex}`, // Will be updated on submit to add the taken timestamp and the ID of the task or referenceNumber to prefix the name of the image
       annotations: [], // set the default annotations to [], Todo, call a predict API to help user by preloading annotations.
     }) as TaskImage;
   };
 
   // the callback that handle the taken camera photos snap
-  handleTakenPhoto = async (takenPhoto: CameraImage) => {
+  handleTakenPhoto = (takenPhoto: CameraImage) => {
     const formatedTakenPhoto = this.formatTakenPhoto(takenPhoto);
 
     console.log(
@@ -284,7 +328,7 @@ export class TaskCreate extends React.Component<
     );
 
     this.setState((prevState) => ({
-      images: [...prevState.images, formatedTakenPhoto],
+      images: [...(prevState.images ?? []), formatedTakenPhoto],
     }));
 
     /*
@@ -299,8 +343,55 @@ export class TaskCreate extends React.Component<
   };
 
   // handle form submit, save the created task to react native async storage ! for now :)
-  _handleOnSubmit = () => {
+  _handleOnSubmit = async () => {
     // compose the task from form fields and dispatch to actions
+    // validate the form first
+    if (!this.state.loading) {
+      if (this.isFormValid()) {
+        this.setState({loading: true});
+        // id: idFromUuid(), // Generate unique ID for the task
+        // Todo: Get the current user
+        const createdTask: Task = {
+          ...this.form,
+          id: idFromUuid(),
+          author: {
+            id: '0',
+            name: 'You', //
+          },
+          completed: false,
+          createDate: new Date().toUTCString(),
+          updateDate: new Date().toUTCString(),
+        };
+        try {
+          // get the stored tasks list // Todo: Store on the server
+          const storageValue = await AsyncStorage.getItem('@storedTasks');
+          let storedTasks: Task[];
+          if (storageValue) {
+            console.log('Storage tasks found');
+            storedTasks = JSON.parse(storageValue);
+          } else {
+            console.log('No storage tasks found');
+            storedTasks = [];
+          }
+
+          const jsonValueOfStoredTasks = JSON.stringify([
+            createdTask,
+            ...storedTasks,
+          ]);
+          // update the storage // adding the new task
+          await AsyncStorage.setItem('@storedTasks', jsonValueOfStoredTasks);
+          console.info('Task save sucess');
+
+          this.clearForm(); // clear the form
+        } catch (e) {
+          // saving error
+          console.warn('Task save failed', e);
+        }
+        this.setState({loading: false});
+      } else console.log('Form not valid');
+    } else {
+      console.log('Loading please wait');
+    }
   };
 
   // some anims on scroll for fab
@@ -422,8 +513,8 @@ export class TaskCreate extends React.Component<
                 </Paragraph>
                 <ToggleButton.Row
                   style={styles.toggleButtonRow}
-                  onValueChange={(value) =>
-                    (this.setFormDetailsField = {vehicleIdentifier: value})
+                  onValueChange={(itemValue) =>
+                    (this.setFormDetailsField = {vehicleIdentifier: itemValue})
                   }
                   value={this.formDetails.vehicleIdentifier ?? ''}>
                   {vehicleIdentifiers.map((item, key) => (
@@ -447,8 +538,10 @@ export class TaskCreate extends React.Component<
                     this.vehicleIdentifierLabel ?? 'Specify the indentifier'
                   }
                   value={this.formDetails.vehicleIdentifierVal ?? ''}
-                  onChangeText={(value) =>
-                    (this.setFormDetailsField = {vehicleIdentifierVal: value})
+                  onChangeText={(itemValue) =>
+                    (this.setFormDetailsField = {
+                      vehicleIdentifierVal: itemValue,
+                    })
                   }
                 />
               </View>
@@ -459,7 +552,9 @@ export class TaskCreate extends React.Component<
                   label="Reference number"
                   disabled={true}
                   value={this.formDetails.vehicleReferenceNumber ?? ''}
-                  onChangeText={(value) => (this.setFormDetailsField = {value})}
+                  onChangeText={(value) =>
+                    (this.setFormDetailsField = {vehicleReferenceNumber: value})
+                  }
                 />
               </View>
 
@@ -486,6 +581,7 @@ export class TaskCreate extends React.Component<
               <PreviewGrid
                 ref={this.previewGridRef}
                 images={images}
+                title={'Taken photos: select to annotate'}
                 onImageListItemTap={this.openAnnotationCanvas}
               />
 
@@ -501,9 +597,10 @@ export class TaskCreate extends React.Component<
                 <Button
                   style={styles.formSubmitButton}
                   color={theme.colors.surface}
+                  loading={this.state.loading}
                   icon={() => (
                     <Icon
-                      name="folder-plus"
+                      name="save"
                       size={20}
                       color={theme.colors.dark}></Icon>
                   )}

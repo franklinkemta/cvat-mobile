@@ -6,16 +6,15 @@ import {TouchableOpacity} from '/utils';
 
 // display a selectable item from the bottom palette
 export const PaletteItem = (props: any) => {
-  const {item, paletteGroup, isSelected, onPress}: any = props;
+  const {label, paletteGroup, isSelected, onPress}: any = props;
   const draggableItem: any = {
-    item: item,
+    label: label,
     svgForm: paletteGroup.fallBackForm ?? 'rect',
     icon: paletteGroup.fallBackIcon ?? 'square',
     color: paletteGroup.fallBackColor ?? 'white',
-    paletteIndex: paletteGroup.index ?? paletteGroup.categoryName,
+    paletteGroupId: paletteGroup.id, // ?? paletteGroup.categoryName,
   };
-  // const selected: any = selectedPaletteItem;
-  // const isSelected = draggableItem.item == selected?.item;
+
   return (
     <TouchableOpacity onPress={() => onPress(draggableItem)}>
       <Chip
@@ -29,8 +28,8 @@ export const PaletteItem = (props: any) => {
             : theme.colors.black
         }
         theme={theme}
-        icon={item.icon ?? draggableItem.icon}>
-        {item.name ?? String(item)}
+        icon={label.icon ?? draggableItem.icon}>
+        {label.name ?? String(label)}
       </Chip>
     </TouchableOpacity>
   );

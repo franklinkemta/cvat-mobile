@@ -25,6 +25,9 @@ import styles from './styles';
 import {theme} from '/theme';
 import {AppRoutes} from '/navigation/routes';
 
+// Dev mode only
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 enum appInfos {
   displayName = 'CAT Mobile',
   version = '1.0.0',
@@ -42,6 +45,12 @@ const SettingsIcon = (color: any, size: any) => (
 export function DrawerContent(props: any) {
   const [devOptionsEnabled, setDevOptionsEnabled] = useState(false); // our place for cuisining the stuffs :)
   const {navigation}: any = props;
+
+  const clearStorageData = () => {
+    console.warn('CAUTION: All created tasks erased !');
+    AsyncStorage.setItem('@storedTasks', '').then(() => {}); // trick to reset created tasks local storage}}
+  };
+
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.drawerContent}>
@@ -130,6 +139,14 @@ export function DrawerContent(props: any) {
               inactiveTintColor="grey"
               label="Labels list"
               onPress={() => {}}
+            />
+            <DrawerItem
+              icon={({color, size}) => (
+                <Icon name="trash" size={size} color={color} />
+              )}
+              inactiveTintColor="grey"
+              label="Erase data"
+              onPress={clearStorageData}
             />
             <DrawerItem
               icon={({color, size}) => (

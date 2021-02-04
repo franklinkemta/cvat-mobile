@@ -102,6 +102,9 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         setAnnotations(nextImage.annotations ?? []);
         // save the previous index
         setCurrentIndex(nextIndex);
+
+        // remove focus on the selected item
+        setFocusedItem(undefined);
       }
     }
   };

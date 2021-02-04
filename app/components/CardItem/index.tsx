@@ -17,7 +17,6 @@ import styles from './styles';
 
 export const CardItem = (props: CardItemProps) => {
   const theme = useTheme();
-
   return (
     <Surface style={styles.container}>
       <TouchableRipple

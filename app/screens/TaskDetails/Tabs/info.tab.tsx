@@ -58,7 +58,7 @@ export const InfoTab = (props: InfoTabProps) => {
   return (
     <ScrollView style={styles.scrollview}>
       <View style={styles.heading}>
-        <Paragraph style={styles.paragraph}>{task.name}</Paragraph>
+        <Paragraph style={styles.paragraph}>Task: {task.name}</Paragraph>
         <Caption style={[styles.paragraph, styles.caption]}>
           Please refer to the desription below
         </Caption>
@@ -96,7 +96,7 @@ export const InfoTab = (props: InfoTabProps) => {
             <Text style={styles.tableTitle}>Author</Text>
           </DataTable.Cell>
           <DataTable.Cell style={styles.tableValueCell}>
-            <Text style={styles.tableValue}>{task.author.name}</Text>
+            <Text style={styles.tableValue}>{task.author?.name}</Text>
           </DataTable.Cell>
         </DataTable.Row>
 
@@ -117,6 +117,72 @@ export const InfoTab = (props: InfoTabProps) => {
           <DataTable.Cell style={styles.tableValueCell}>
             <Text style={styles.tableValue}>
               {task.results?.length ? task.results.length : 'Not set'}
+            </Text>
+          </DataTable.Cell>
+        </DataTable.Row>
+        <View style={styles.heading}>
+          <Paragraph style={styles.paragraph}>Vehicle details</Paragraph>
+          <Caption style={[styles.paragraph, styles.caption]}>
+            Informations about the vehicle
+          </Caption>
+        </View>
+        <DataTable.Row style={styles.tableRow}>
+          <DataTable.Cell style={styles.tableTitleCell}>
+            <Text style={styles.tableTitle}>Contition</Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={styles.tableValueCell}>
+            <Text style={styles.tableValue}>
+              {task.details?.vehicleContition ?? 'Not set'}
+            </Text>
+          </DataTable.Cell>
+        </DataTable.Row>
+        <DataTable.Row style={styles.tableRow}>
+          <DataTable.Cell style={styles.tableTitleCell}>
+            <Text style={styles.tableTitle}>Activity</Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={styles.tableValueCell}>
+            <Text style={styles.tableValue}>
+              {task.details?.vehicleActivity ?? 'Not set'}
+            </Text>
+          </DataTable.Cell>
+        </DataTable.Row>
+        <DataTable.Row style={styles.tableRow}>
+          <DataTable.Cell style={styles.tableTitleCell}>
+            <Text style={styles.tableTitle}>Identifier type</Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={styles.tableValueCell}>
+            <Text style={styles.tableValue}>
+              {task.details?.vehicleIdentifier ?? 'UNKNOWN'}
+            </Text>
+          </DataTable.Cell>
+        </DataTable.Row>
+        <DataTable.Row style={styles.tableRow}>
+          <DataTable.Cell style={styles.tableTitleCell}>
+            <Text style={styles.tableTitle}>Identifier value</Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={styles.tableValueCell}>
+            <Text style={styles.tableValue}>
+              {task.details?.vehicleIdentifierVal ?? 'UNKNOWN'}
+            </Text>
+          </DataTable.Cell>
+        </DataTable.Row>
+        <DataTable.Row style={styles.tableRow}>
+          <DataTable.Cell style={styles.tableTitleCell}>
+            <Text style={styles.tableTitle}>Reference Number</Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={styles.tableValueCell}>
+            <Text style={styles.tableValue}>
+              {task.details?.vehicleReferenceNumber ?? 'Not set'}
+            </Text>
+          </DataTable.Cell>
+        </DataTable.Row>
+        <DataTable.Row style={styles.tableRow}>
+          <DataTable.Cell style={styles.tableTitleCell}>
+            <Text style={styles.tableTitle}>Cleanliness</Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={styles.tableValueCell}>
+            <Text style={styles.tableValue}>
+              {task.details?.vehicleCleanliness ?? 'Not set'}
             </Text>
           </DataTable.Cell>
         </DataTable.Row>
@@ -176,12 +242,12 @@ const styles = StyleSheet.create({
   tableValueCell: {},
   tableTitle: {
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 14,
     color: 'grey',
   },
   tableValue: {
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 12,
     color: 'black',
   },
   galleryHeader: {

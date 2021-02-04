@@ -62,7 +62,7 @@ export class ImageCarousel extends React.Component<
   _renderItem({item, index}: any, parallaxProps?: any) {
     // the optional parameter parallaxProps, for displaying images
     // here we share the item properties as props of the CarouselItem child component
-    console.log('render_Item', item);
+    // console.log('render_Item', item);
     return (
       <CarouselItem
         itemStyles={{width: this.ITEM_WIDTH, height: this.ITEM_HEIGHT}}

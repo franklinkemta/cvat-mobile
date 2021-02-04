@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  Text,
-  StatusBar,
-  ScrollView,
-} from 'react-native';
-import {StackNavigationProp} from '@react-navigation/stack';
+import {View, FlatList, StyleSheet, RefreshControl} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Caption, Paragraph, useTheme} from 'react-native-paper';
 
@@ -17,11 +9,13 @@ import {AppRoutes} from '/navigation/routes';
 
 import {theme} from '/theme';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // todo implement store
-import {tasks as dummyTasks} from '/data';
+// import {tasks as dummyTasks} from '/data';
 
 // return the first image of the task images as preview image
-const getRandomPreviewImage = (images: any[]): BaseImage => {
+const getPreviewImage = (images: any[]): BaseImage => {
   const index = Math.floor(Math.random() * Math.floor(images.length));
   // this return is wonderfull
   return images[index] as BaseImage;
@@ -29,12 +23,17 @@ const getRandomPreviewImage = (images: any[]): BaseImage => {
 
 // type TaskItemProps = React.ComponentProps<typeof CardItem>;
 
-type Props = CardItemProps & {
+type TasksProps = CardItemProps & {
   navigation: any; // StackNavigationProp<StackNavigatorParamlist>;
   route: any;
 };
 
-function keyExtractor(item: CardItemProps) {
+type TasksState = {
+  tasks: Tasks[];
+  refreshing: boolean;
+};
+
+function keyExtractor(item: CardItemProps, index: number) {
   return item.id.toString();
 }
 
@@ -53,43 +52,97 @@ function renderHeading() {
   );
 }
 
-export const Tasks = (props: Props): React.ReactElement => {
-  const theme = useTheme();
+export class Tasks extends React.PureComponent<TasksProps, TasksState> {
+  // const theme = useTheme();
 
-  const data: any = dummyTasks.map((task) => ({
-    ...task,
-    image: getRandomPreviewImage(task.images),
-    imagesCount: task.images.length,
-    resultsCount: task.results?.length,
-    onPress: (id: string) => {
-      // console.log('task id', id);
-      props.navigation &&
-        props.navigation.navigate(AppRoutes.TASK_DETAILS, {
-          ...task, // send the task to result view by route.params
-          // Todo Implement task details fetch from server
-        });
-    },
-  }));
+  state = {
+    tasks: [],
+    refreshing: false,
+  };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        ListHeaderComponent={renderHeading}
-        ListHeaderComponentStyle={{
-          paddingHorizontal: theme.paddingXDefault,
-        }}
-        contentContainerStyle={{backgroundColor: theme.colors.background}}
-        style={{backgroundColor: theme.colors.background}}
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={keyExtractor}
-        ItemSeparatorComponent={() => (
-          <View style={{height: StyleSheet.hairlineWidth}} />
-        )}
-      />
-    </SafeAreaView>
-  );
-};
+  loadTasks = async () => {
+    let storedTasks: Task[];
+
+    console.log('Loading tasks from local storage');
+    try {
+      const storageValue = await AsyncStorage.getItem('@storedTasks');
+      if (storageValue) {
+        console.log('Storage tasks found');
+        storedTasks = JSON.parse(storageValue) || [];
+      } else {
+        console.log('No storage tasks found');
+        storedTasks = [];
+      }
+    } catch (error) {
+      console.log('loading error', error);
+      storedTasks = [];
+    }
+
+    // load tasks from storage
+    console.log('Formating task list'); // dummyTasks.map
+    const tasks = storedTasks.map((task: any) => ({
+      ...task,
+      image: getPreviewImage(task.images),
+      imagesCount: task.images.length,
+      resultsCount: task.results?.length,
+      onPress: (id: string) => {
+        // console.log('task id', id);
+        this.props.navigation &&
+          this.props.navigation.navigate(AppRoutes.TASK_DETAILS, {
+            ...task, // send the task to result view by route.params
+            // Todo Implement task details fetch from server
+          });
+      },
+    }));
+    this.setState({
+      tasks: tasks,
+    });
+  };
+
+  // Pull to refresh
+  onRefresh = () => {
+    this.setState({refreshing: true});
+    this.loadTasks()
+      .then(() => {
+        this.setState({refreshing: false});
+      })
+      .catch((error: any) => {
+        console.log('loading tasks error', error);
+        this.setState({refreshing: false});
+      });
+  };
+
+  componentDidMount() {
+    this.loadTasks();
+  }
+
+  render() {
+    return (
+      <SafeAreaView style={styles.container}>
+        <FlatList
+          ListHeaderComponent={renderHeading}
+          ListHeaderComponentStyle={{
+            paddingHorizontal: theme.paddingXDefault,
+          }}
+          contentContainerStyle={{backgroundColor: theme.colors.background}}
+          style={{backgroundColor: theme.colors.background}}
+          data={this.state.tasks}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          ItemSeparatorComponent={() => (
+            <View style={{height: StyleSheet.hairlineWidth}} />
+          )}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh}
+            />
+          }
+        />
+      </SafeAreaView>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
