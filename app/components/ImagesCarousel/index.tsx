@@ -12,12 +12,8 @@ import CarouselItem from './CarouselItem';
 
 // import styles
 import styles from './styles';
-import {Appbar} from 'react-native-paper';
 
-import {theme} from '/theme';
-
-// import utils
-import {formatImagesSources} from '/utils';
+import {Previewer} from '../AnnotationCanvas/Previewer';
 
 export class ImageCarousel extends React.Component<
   ImageCarouselProps,
@@ -27,8 +23,8 @@ export class ImageCarousel extends React.Component<
 
   state = {
     listImageIndex: 0,
-    images: [],
-    imgViewModal: false,
+    annotatedImages: [],
+    canvasPreviwerModal: false,
   };
 
   constructor(props: ImageCarouselProps) {
@@ -38,12 +34,12 @@ export class ImageCarousel extends React.Component<
     this._handleOnTapItem = this._handleOnTapItem.bind(this);
 
     // set items entries to the state
-    const {images}: any = this.props;
-    // initial state and Map images items to entries values
+    const {annotatedImages}: any = this.props;
+    // initial state and Map annotatedImages items to entries values
     this.state = {
       ...this.state,
       listImageIndex: 0,
-      images: images,
+      annotatedImages: annotatedImages,
     };
   }
 
@@ -60,7 +56,7 @@ export class ImageCarousel extends React.Component<
   }
 
   _renderItem({item, index}: any, parallaxProps?: any) {
-    // the optional parameter parallaxProps, for displaying images
+    // the optional parameter parallaxProps, for displaying annotatedImages
     // here we share the item properties as props of the CarouselItem child component
     // console.log('render_Item', item);
     return (
@@ -74,15 +70,15 @@ export class ImageCarousel extends React.Component<
     );
   }
 
-  setImgViewModal = (visible: boolean) => {
-    this.setState({imgViewModal: visible});
+  setCanvasPreviewerModal = (visible: boolean) => {
+    this.setState({canvasPreviwerModal: visible});
   };
 
   // Handle when item is taped and show modal
   _handleOnTapItem(listImageIndex: number) {
     // console.log(listImageIndex);
     this.setState({listImageIndex}); // may not be necessary
-    this.setImgViewModal(true);
+    this.setCanvasPreviewerModal(true);
   }
 
   // Handle when item is swiped and show annotations list
@@ -93,65 +89,40 @@ export class ImageCarousel extends React.Component<
   }
 
   // Render the grid image gallery under the PreviewGrid on ImageList item press
-  _renderImagesGallery = (images: any[], listImageIndex: number) => (
-    <ImageViewer
-      imageUrls={images}
-      index={listImageIndex}
-      renderIndicator={() => <></>}
-      renderHeader={this._galleryHeader}
-      enableSwipeDown={false}
-      saveToLocalByLongPress={false}
-      useNativeDriver={true}
+  _renderCanvasPreviewer = (annotatedImages: any[], listImageIndex: number) => (
+    <Previewer
+      annotatedImages={annotatedImages}
+      initialIndex={listImageIndex}
+      handleClose={() => {
+        this.setCanvasPreviewerModal(false);
+      }}
     />
   );
-
-  _galleryTitle = (currentIndex: number | undefined): any => {
-    const itemsCount: number = this.state.images.length;
-    const index: number = currentIndex != undefined ? currentIndex + 1 : 0;
-    return `${index}/${itemsCount}`;
-  };
-
-  _galleryHeader = (currentIndex: number | undefined) => {
-    // format index to display (A/B)
-
-    return (
-      <Appbar theme={theme} style={styles.galleryHeader}>
-        <Appbar.BackAction onPress={() => this.setImgViewModal(false)} />
-        <Appbar.Content title={this._galleryTitle(currentIndex)} />
-      </Appbar>
-    );
-  };
 
   render() {
     const {layout}: ImageCarouselProps = this.props;
     const {
-      images,
-      imgViewModal,
+      annotatedImages,
+      canvasPreviwerModal,
       listImageIndex,
-    }: ImageCarouselState = this.state; // get the entries images
-    /*
-    const images: any[] = entries.map((image) => {
-      return {url: image.source.uri};
-    });
-    */
-    //const images: any[] = formatImagesSources(entries);
+    }: ImageCarouselState = this.state;
     return (
       <>
         <Modal
           animationType="fade"
           transparent={true}
-          visible={imgViewModal}
+          visible={canvasPreviwerModal}
           onRequestClose={() => {
-            this.setImgViewModal(false);
+            this.setCanvasPreviewerModal(false);
           }}>
-          {this._renderImagesGallery(images, listImageIndex)}
+          {this._renderCanvasPreviewer(annotatedImages, listImageIndex)}
         </Modal>
         <Carousel
           ref={(ref: any) => {
             this.carouselRef = ref;
           }}
           layout={layout}
-          data={images}
+          data={annotatedImages}
           sliderWidth={DEVICE_WIDTH}
           itemWidth={this.ITEM_WIDTH}
           containerCustomStyle={styles.container}
@@ -164,7 +135,7 @@ export class ImageCarousel extends React.Component<
 
         <Pagination
           carouselRef={this.carouselRef}
-          dotsLength={images.length}
+          dotsLength={annotatedImages.length}
           activeDotIndex={listImageIndex}
           containerStyle={styles.paginationContainer}
           dotStyle={styles.paginationDot}

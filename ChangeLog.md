@@ -212,4 +212,5 @@ https://www.npmjs.com/package/react-native-image-zoom-viewer
 
 # https://docs.gradle.org/6.8/userguide/command_line_interface.html
 
-# Gradlew Commandline
+# Gradlew Commandline 
+# https://github.com/react-native-cameraroll/react-native-cameraroll

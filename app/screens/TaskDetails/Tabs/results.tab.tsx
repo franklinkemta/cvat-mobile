@@ -144,7 +144,7 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
       <ScrollView style={styles.scrollview}>
         <ImageCarousel
           onSnapToItem={this.handleOnSnapToItem}
-          images={formatImagesSources(
+          annotatedImages={formatImagesSources(
             this.taskImages.map((item) => item as BaseImage),
           )}
           layout="default"

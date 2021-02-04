@@ -26,7 +26,7 @@ const DraggableItem = (props: any) => {
             fontWeight="normal"
             fontSize="6"
             fill={draggableItem.color}>
-            {draggableItem.item?.name ?? String(draggableItem.item)}
+            {draggableItem.label?.name ?? String(draggableItem.label)}
           </Text>
         </G>
       );
@@ -53,7 +53,7 @@ const DraggableItem = (props: any) => {
             fontWeight="normal"
             fontSize="6"
             fill={draggableItem.color}>
-            {draggableItem.item?.name ?? String(draggableItem.item)}
+            {draggableItem.label?.name ?? String(draggableItem.label)}
           </Text>
         </G>
       );
@@ -80,7 +80,7 @@ const DraggableItem = (props: any) => {
             fontWeight="normal"
             fontSize="6"
             fill={draggableItem.color}>
-            {draggableItem.item?.name ?? String(draggableItem.item)}
+            {draggableItem.label?.name ?? String(draggableItem.label)}
           </Text>
         </G>
       );

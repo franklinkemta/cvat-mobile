@@ -1,6 +1,6 @@
 // We can use here either type or interface to define the ImageCarouselProps
 declare interface ImageCarouselProps {
-  images: BaseImage[];
+  annotatedImages: BaseImage[];
   layout: 'default' | 'stack' | 'tinder';
   onSnapToItem: (listImageIndex: number) => void; // Defined optional function parameter to handle item swipe
   itemWidthRatio?: number; // e.g 1 full witdth one item, 0.80 preview other items in the background
@@ -9,6 +9,6 @@ declare interface ImageCarouselProps {
 
 declare type ImageCarouselState = {
   listImageIndex: number;
-  images: BaseImage[];
-  imgViewModal: boolean;
+  annotatedImages: BaseImage[];
+  canvasPreviwerModal: boolean;
 };
