@@ -40,6 +40,7 @@ import {
   saveFileToFs,
   readFileFromFs,
   FS_PATHS,
+  alertMessage,
 } from '/utils';
 
 // todo implement store
@@ -181,31 +182,56 @@ export class TaskCreate extends React.Component<
     const form = this.form;
     const formDetails = this.formDetails;
     if (!form.name) {
-      console.log('Invalid name');
+      alertMessage('Invalid task name', 'Please enter a name for the task');
       return false;
     }
     if (!formDetails.vehicleContition) {
-      console.log('Invalid vehicleContition');
+      alertMessage(
+        'Invalid vehicle contition',
+        'Please precise the vehicle condition',
+      );
       return false;
     }
     if (!formDetails.vehicleActivity) {
-      console.log('Invalid vehicleActivity');
+      alertMessage(
+        'Invalid vehicle activity',
+        'Please precise the current activity',
+      );
       return false;
     }
     if (!formDetails.vehicleIdentifier) {
-      console.log('Invalid vehicleIdentifier');
+      alertMessage(
+        'Invalid vehicle identifier',
+        'Please select the vehicle identifier',
+      );
       return false;
     }
     if (!formDetails.vehicleIdentifierVal) {
-      console.log('Invalid vehicleIdentifierVal');
+      alertMessage(
+        'Invalid vehicle identifier value',
+        'Please enter the vehicle identifier value',
+      );
       return false;
     }
     if (!formDetails.vehicleReferenceNumber) {
-      console.log('Invalid vehicleReferenceNumber');
+      alertMessage(
+        'Invalid vehicle reference number',
+        'Please set a reference number',
+      );
       return false;
     }
     if (!form.images.length) {
-      console.log('No images, no taken photos');
+      alertMessage(
+        'Photos are required',
+        'At least one photo is required for creating a new the task, Please take photos from the camera',
+        [
+          {
+            text: 'Add photos',
+            onPress: this.openCameraRafale,
+            // style: ' '
+          },
+        ],
+      );
       return false;
     }
     return true;
@@ -293,14 +319,15 @@ export class TaskCreate extends React.Component<
   };
 
   handleAnnotationCancel = () => {
-    console.log('Annotation canceled');
+    console.log('Annotation cancelled !');
     this.previewGridRef.current?.setState({modalVisible: true});
   };
 
   handleAnnotatedImages = (updatedImages: TaskImage[]) => {
-    console.log('Finished annotating the images');
-    this.previewGridRef.current?.setState({modalVisible: true});
+    // console.log('Finished annotating the images');
+    // this.previewGridRef.current?.setState({modalVisible: true});
     this.setState({images: updatedImages});
+    alertMessage('Photos updated !', 'Annotated  photos updated sucessfuly');
   };
 
   formatTakenPhoto = (takenPhoto: CameraImage): TaskImage => {
@@ -380,7 +407,10 @@ export class TaskCreate extends React.Component<
           ]);
           // update the storage // adding the new task
           await AsyncStorage.setItem('@storedTasks', jsonValueOfStoredTasks);
-          console.info('Task save sucess');
+          alertMessage(
+            'Task created',
+            'Sucessfuly added the task:  ' + createdTask.name,
+          );
 
           this.clearForm(); // clear the form
         } catch (e) {

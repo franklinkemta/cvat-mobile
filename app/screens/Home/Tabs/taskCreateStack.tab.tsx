@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import {TaskCreate, Camera, Kitchen} from '/screens';
+import {TaskCreate, Camera} from '/screens';
 
 import {AppRoutes} from '/navigation/routes';
 
@@ -41,7 +41,6 @@ export const TaskCreateStackTab = () => {
         options={{
           headerTitle: 'Add photos to tasks',
           animationEnabled: false,
-          cardShadowEnabled: true,
         }}
       />
       <Stack.Screen
@@ -51,17 +50,6 @@ export const TaskCreateStackTab = () => {
           headerTitle: 'Annotate the image',
           animationEnabled: true,
           cardShadowEnabled: true,
-        }}
-      />
-      <Stack.Screen
-        name={AppRoutes.KITCHEN}
-        component={Kitchen}
-        options={{
-          headerTitle: '!! Kitchen for Dev Mode !!',
-          animationEnabled: true,
-          gestureEnabled: true,
-          cardOverlayEnabled: true,
-          // header: () => null,
         }}
       />
     </Stack.Navigator>

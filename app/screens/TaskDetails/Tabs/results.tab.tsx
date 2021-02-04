@@ -1,6 +1,12 @@
 import React from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
-import {ActivityIndicator, Divider, List} from 'react-native-paper';
+import {StyleSheet, Text, View, ScrollView, Alert} from 'react-native';
+import {
+  ActivityIndicator,
+  Chip,
+  Divider,
+  List,
+  Paragraph,
+} from 'react-native-paper';
 
 import Orientation from 'react-native-orientation-locker';
 
@@ -70,7 +76,7 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
 
   componentDidMount() {
     // load the annotations for the active item
-    if (!this.state.annotationsResults) this.handleOnSnapToItem(0);
+    if (!this.state.annotationsResults.length) this.handleOnSnapToItem(0);
   }
 
   componentWillUnmount() {
@@ -144,33 +150,41 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
           layout="default"
         />
         <Divider style={styles.divider} />
+        <Paragraph style={styles.annotationTitle}>
+          Annotations on this Image
+        </Paragraph>
         <View style={styles.listContainer}>
           {annotationsResults && annotationsResults.length ? (
-            <List.Section
-              title="Annotations on this Image"
-              titleStyle={styles.listTitle}>
+            <View>
               {annotationsResults.map(
                 (annotationsResult: any, index: number) => (
-                  <List.Accordion
-                    key={index}
-                    style={styles.listAccordion}
-                    title={annotationsResult.categoryName}
-                    left={(props) => (
-                      <List.Icon {...props} icon="square" style={{width: 12}} />
-                    )}>
-                    {annotationsResult.labels.map(
-                      (annotation: any, itemIndex: number) => (
-                        <List.Item
-                          key={itemIndex}
-                          title={annotation.label.name}
-                          style={styles.listItem}
-                        />
-                      ),
-                    )}
-                  </List.Accordion>
+                  <View key={index} style={styles.annotationsResultContainer}>
+                    <Paragraph style={styles.categoryName}>
+                      {annotationsResult.categoryName}
+                    </Paragraph>
+                    <View style={styles.paletteGroupContent}>
+                      {annotationsResult.labels.length > 0 &&
+                        annotationsResult.labels.map(
+                          (annotation: any, itemIndex: number) => (
+                            <Chip
+                              key={itemIndex}
+                              mode={'flat'}
+                              style={styles.annotationLabelItem}
+                              theme={theme}
+                              selectedColor={
+                                annotationsResult.fallBackColor ??
+                                theme.colors.primary
+                              }
+                              icon={annotationsResult.fallBackIcon ?? 'square'}>
+                              {annotation.label.name}
+                            </Chip>
+                          ),
+                        )}
+                    </View>
+                  </View>
                 ),
               )}
-            </List.Section>
+            </View>
           ) : (
             <View
               style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -192,16 +206,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     padding: theme.paddingXDefault,
   },
-  listAccordion: {
-    borderTopWidth: theme.borderDefault,
-    borderTopColor: theme.colors.border, // theme.colors.primary,
+  categoryName: {
     borderBottomWidth: theme.borderDefault,
     borderBottomColor: theme.colors.primary, // theme.colors.primary,
-  },
-  listItem: {
-    backgroundColor: theme.colors.surface,
-    borderBottomWidth: theme.borderThin,
-    borderBottomColor: theme.colors.border, // theme.colors.primary,
   },
   listTitle: {
     color: theme.colors.dark,
@@ -220,5 +227,28 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     fontWeight: 'bold',
     color: theme.colors.secondary,
+  },
+  annotationLabelItem: {
+    borderWidth: 0.2,
+    marginEnd: 1,
+    marginTop: 1,
+    borderColor: theme.colors.border,
+    backgroundColor: 'rgba(55, 71, 79, 0.7)', // theme.colors.secondary,
+  },
+  annotationsResultContainer: {
+    paddingBottom: 20,
+    paddingHorizontal: 10,
+  },
+  paletteGroupContent: {
+    flex: 1,
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+  },
+  annotationTitle: {
+    flex: 1,
+    paddingVertical: 5,
+    textAlign: 'center',
   },
 });

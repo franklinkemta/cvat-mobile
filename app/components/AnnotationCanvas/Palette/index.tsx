@@ -1,7 +1,7 @@
 import React, {createRef} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
-import {IconButton, Searchbar} from 'react-native-paper';
+import {ActivityIndicator, IconButton, Searchbar} from 'react-native-paper';
 import {PaletteGroup} from '../PaletteGroup';
 import {TouchableOpacity} from '/utils';
 
@@ -23,10 +23,7 @@ type PaletteState = {
   currentPaletteGroups: any[];
 };
 
-export class CanvasPalette extends React.PureComponent<
-  PaletteProps,
-  PaletteState
-> {
+export class Palette extends React.PureComponent<PaletteProps, PaletteState> {
   bottomSheetRef = createRef<BottomSheet>(); // useRef<BottomSheet>(null);
 
   bottomSnapPoints = [
@@ -160,6 +157,9 @@ export class CanvasPalette extends React.PureComponent<
         keyExtractor={this.autoCompleteKeyExtractor}
         listStyle={{backgroundColor: 'transparent'}}
       />
+      {!this.state.currentPaletteGroups.length && (
+        <ActivityIndicator style={styles.activityIndicator} />
+      )}
     </View>
   );
 
@@ -191,14 +191,14 @@ export class CanvasPalette extends React.PureComponent<
 
 const styles = StyleSheet.create({
   bottomSheetPaletteContent: {
-    backgroundColor: theme.colors.surface,
+    backgroundColor: theme.colors.canvasBgDark,
     height: '100%',
     borderRadius: 0,
     top: 0,
   },
   autocompleteContainer: {
     // left: 0,
-    backgroundColor: theme.colors.canvasBgDark,
+    // backgroundColor: theme.colors.canvasBgDark,
     // bottom: 0,
     flex: 1,
   },
@@ -213,5 +213,10 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  activityIndicator: {
+    color: theme.colors.primary,
+    opacity: 0.8,
+    bottom: 10,
   },
 });

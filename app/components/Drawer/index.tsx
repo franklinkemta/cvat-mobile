@@ -27,6 +27,7 @@ import {AppRoutes} from '/navigation/routes';
 
 // Dev mode only
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {alertMessage} from '/utils';
 
 enum appInfos {
   displayName = 'CAT Mobile',
@@ -47,8 +48,26 @@ export function DrawerContent(props: any) {
   const {navigation}: any = props;
 
   const clearStorageData = () => {
-    console.warn('CAUTION: All created tasks erased !');
-    AsyncStorage.setItem('@storedTasks', '').then(() => {}); // trick to reset created tasks local storage}}
+    alertMessage(
+      'Are you sure you want to clear your data ?',
+      'All the task you created and images stored locally will be deleted',
+      [
+        {
+          text: 'yes clear my data',
+          onPress: () => {
+            // console.warn('CAUTION: All created tasks erased !');
+            AsyncStorage.setItem('@storedTasks', '').then(() => {
+              alertMessage(
+                'CAUTION: All created tasks erased !',
+                'Please close and relaunch the app',
+                [],
+                'warn',
+              );
+            }); // trick to reset created tasks local storage}}
+          },
+        },
+      ],
+    );
   };
 
   return (

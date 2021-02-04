@@ -17,7 +17,7 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import {Appbar, TouchableRipple} from 'react-native-paper';
 // import vectors icons for palette
 
-import {DEVICE_HEIGHT, idFromUuid} from '/utils';
+import {alertMessage, DEVICE_HEIGHT, idFromUuid} from '/utils';
 
 import {theme} from '/theme';
 import styles from './styles';
@@ -28,7 +28,7 @@ import {
   ArrowRightButton,
 } from '../../components/AnnotationCanvas/ArrowButton';
 
-import {CanvasPalette} from '../../components/AnnotationCanvas/CanvasPalette';
+import {Palette} from '../../components/AnnotationCanvas/Palette';
 import {LoadingIndicator} from '../../components/AnnotationCanvas/LoadingIndicator';
 
 // Note that we wrap our app inside a gestureHandlerRootHOC, Read the docu. to learn more :) !
@@ -36,7 +36,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   const {navigation, route} = props;
   const {images, paletteGroups, initialIndex, paletteTitle} = route.params;
 
-  const paletteRef = useRef<CanvasPalette>(null);
+  const paletteRef = useRef<Palette>(null);
   const imgViewerRef = useRef<ImageViewer>(null);
 
   const safeAreaInsets = useSafeAreaInsets();
@@ -110,11 +110,23 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   };
 
   const handleCanvasClose = () => {
-    console.log('Cancel annotation');
-    // releaseBackButton(true);
-    navigation.navigate(route.params.previousScreen, {
-      updatedImages: [], // indicate that the annotation was canceled
-    });
+    alertMessage(
+      'Cancel annotation ?',
+      'Are you sure you want to cancel the current changes?',
+      [
+        {
+          text: 'Yes, Cancel',
+          onPress: () => {
+            navigation.navigate(route.params.previousScreen, {
+              updatedImages: [], // indicate that the annotation was canceled
+            });
+          },
+        },
+        {
+          text: 'No',
+        },
+      ],
+    );
   };
 
   const handleCanvasSave = async () => {
@@ -368,7 +380,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
         style={styles.canvasContainer}
         footerContainerStyle={styles.canvasFooterContainerStyles}
       />
-      <CanvasPalette
+      <Palette
         ref={paletteRef}
         title={paletteTitle}
         paletteGroups={paletteGroups}
