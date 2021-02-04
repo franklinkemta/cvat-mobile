@@ -72,10 +72,10 @@ export const InfoTab = ({route, navigation}: InfoTabProps) => {
         const storageValue = await AsyncStorage.getItem('@storedTasks');
         let storedTasks: Task[];
         if (storageValue) {
-          console.log('Loading task from storage');
+        // console.log('Loading task from storage');
           storedTasks = JSON.parse(storageValue);
         } else {
-          console.log('No storage tasks found');
+        // console.log('No storage tasks found');
           storedTasks = [];
         }
 
@@ -97,11 +97,11 @@ export const InfoTab = ({route, navigation}: InfoTabProps) => {
         navigation.goBack();
       } catch (error) {
         // saving error
-        console.warn('Task deletion failed', error);
+      // console.warn('Task deletion failed', error);
       }
       setLoading(false);
     } else {
-      console.log('Loading please wait..');
+    // console.log('Loading please wait..');
     }
   };
 

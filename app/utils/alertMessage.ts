@@ -14,16 +14,16 @@ export const alertMessage = (
   if (CONSOLE_LOG) {
     switch (type) {
       case 'info':
-        console.info(title, message);
+      // console.info(title, message);
         break;
       case 'warn':
-        console.warn(title, message);
+      // console.warn(title, message);
         break;
       case 'error':
-        console.error(title, message);
+      // console.error(title, message);
         break;
       default:
-        console.log(title, message);
+      // console.log(title, message);
         break;
     }
   }

@@ -38,11 +38,11 @@ export const saveFileToFs = async (
   /*
   return RNFS.writeFile(path, fileData)
     .then((sucess: any) => {
-      console.log('FILE WRITTEN', sucess);
+    // console.log('FILE WRITTEN', sucess);
       return true;
     })
     .catch((err) => {
-      console.log(err.message);
+    // console.log(err.message);
       return false;
     });
     */
@@ -75,11 +75,11 @@ export const readFileFromFs = async (
   // read the file
   return RNFS.readFile(path, encoding)
     .then((fileData: any) => {
-      console.log('FILE READ');
+    // console.log('FILE READ');
       return fileData;
     })
     .catch((err) => {
-      console.log(err.message);
+    // console.log(err.message);
       return false;
     });
 };

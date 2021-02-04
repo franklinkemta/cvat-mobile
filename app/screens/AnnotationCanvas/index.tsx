@@ -75,7 +75,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
 
   // store the current annotations on the corresponding image when the annotated image change
   const updateImageAnnotations = async () => {
-    console.log('saving annotations at index...', currentIndex);
+  // console.log('saving annotations at index...', currentIndex);
     // update the annotations for the image at the current index
     const currentImage = currentImages[currentIndex];
     const updatedImage = {
@@ -89,7 +89,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
 
   // load the annotation for the next image
   const handleImageChange = async (nextIndex: number | undefined) => {
-    console.log(`image changed from ${currentIndex} to ${nextIndex}`);
+  // console.log(`image changed from ${currentIndex} to ${nextIndex}`);
     if (nextIndex != undefined) {
       // save the annotations of the current image first
       await updateImageAnnotations();
@@ -98,7 +98,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
 
       // load the next images annotations
       if (nextImage != undefined) {
-        console.log('loading annotations for index...', nextIndex);
+      // console.log('loading annotations for index...', nextIndex);
         setAnnotations(nextImage.annotations ?? []);
         // save the previous index
         setCurrentIndex(nextIndex);
@@ -132,7 +132,7 @@ export const AnnotationCanvas = gestureHandlerRootHOC((props: any) => {
   const handleCanvasSave = async () => {
     // releaseBackButton(true);
     // save the annotations on the current images first
-    console.log('Save and exist');
+  // console.log('Save and exist');
     await updateImageAnnotations();
     navigation.navigate(route.params.previousScreen, {
       updatedImages: currentImages,

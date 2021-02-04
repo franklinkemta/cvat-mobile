@@ -72,23 +72,23 @@ export const _Canvas = gestureHandlerRootHOC((props: any) => {
   };
 
   const openPalette = () => {
-    console.log('opening palette');
+  // console.log('opening palette');
     paletteRef.current?.snapTo(openSnapPoint);
   };
 
   const openPaletteSearch = () => {
-    console.log('opening search in palette');
+  // console.log('opening search in palette');
     // show in fullscreen when the search input in focused
     paletteRef.current?.snapTo(safeAreaInsets.top);
   };
 
   const closePalette = () => {
-    console.log('closing palette');
+  // console.log('closing palette');
     paletteRef.current?.snapTo(closedSnapPoint);
   };
 
   const addCustomPaletteGroup = () => {
-    console.log('add custom palette group');
+  // console.log('add custom palette group');
   };
 
   // return the  current current index/totalCount for the header // formated to display (A/B)
@@ -149,7 +149,7 @@ export const _Canvas = gestureHandlerRootHOC((props: any) => {
   };
 
   const renderLoader = () => {
-    console.log('Canvas is loading');
+  // console.log('Canvas is loading');
     return (
       <View style={{}}>
         <ActivityIndicator color={'grey'} size="large" style={{}} />
@@ -208,7 +208,7 @@ export const _Canvas = gestureHandlerRootHOC((props: any) => {
                   key={itemIndex}
                   icon={item.svgForm ?? paletteGroup.fallBackItem ?? 'square'}
                   onPress={() =>
-                    console.log(
+                  // console.log(
                       paletteGroup.categoryName ?? '[UNKNOWN]',
                       'Palette Item select Item',
                       item.name ?? String(item),
@@ -255,7 +255,7 @@ export const _Canvas = gestureHandlerRootHOC((props: any) => {
         snapPoints={bottomSnapPoints}
         borderRadius={10}
         onOpenStart={() => {
-          console.log('open');
+        // console.log('open');
         }}
         initialSnap={closedSnapPoint}
         renderHeader={paletteHeader}

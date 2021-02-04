@@ -41,13 +41,13 @@ export const Previewer = gestureHandlerRootHOC((props: any) => {
 
   // load the annotation for the next image
   const handleImageChange = async (nextIndex: number | undefined) => {
-    console.log(`image changed from ${currentIndex} to ${nextIndex}`);
+  // console.log(`image changed from ${currentIndex} to ${nextIndex}`);
     if (nextIndex != undefined) {
       const nextImage: any = annotatedImages[nextIndex] ?? undefined;
 
       // load the next annotatedImages annotations
       if (nextImage != undefined) {
-        console.log('loading annotations for index...', nextIndex);
+      // console.log('loading annotations for index...', nextIndex);
         setAnnotations(nextImage.annotations ?? []);
         // save the previous index
         setCurrentIndex(nextIndex);
@@ -56,13 +56,13 @@ export const Previewer = gestureHandlerRootHOC((props: any) => {
   };
 
   const handleCanvasClose = () => {
-    console.log('close canvas previewer');
+  // console.log('close canvas previewer');
     handleClose();
   };
 
   const handleCanvasSave = async () => {
     // Share the image
-    console.log('Share the image');
+  // console.log('Share the image');
     if (hasAndroidPermission()) {
       // imgViewerRef.current?.saveToLocal();
       savePicture(annotatedImages[currentIndex].uri, {

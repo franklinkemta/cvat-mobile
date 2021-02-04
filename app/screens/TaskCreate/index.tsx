@@ -120,7 +120,7 @@ export class TaskCreate extends React.Component<
     if (routeParams?.takenPhotos?.length) {
       // store the photo in a temp variable and set the routeParams.takenPhotos to undefined to unsubscribe the componentDidUpdate circle check on this block
       const takenPhotos: CameraImage[] = routeParams.takenPhotos;
-      console.log('taken photos', takenPhotos.length);
+    // console.log('taken photos', takenPhotos.length);
 
       this.props.navigation.setParams({takenPhotos: undefined});
       this.setState({showFAB: true}); // show fab
@@ -180,7 +180,7 @@ export class TaskCreate extends React.Component<
 
   // reset form fieds
   isFormValid = (): boolean => {
-    console.log('Validating form data');
+  // console.log('Validating form data');
     const form = this.form;
     const formDetails = this.formDetails;
     if (!form.name) {
@@ -241,7 +241,7 @@ export class TaskCreate extends React.Component<
 
   // reset form fieds
   clearForm = () => {
-    console.log('Clearing form data');
+  // console.log('Clearing form data');
     this.setState({
       listImageIndex: 0,
       name: '',
@@ -321,7 +321,7 @@ export class TaskCreate extends React.Component<
   };
 
   handleAnnotationCancel = () => {
-    console.log('Annotation cancelled !');
+  // console.log('Annotation cancelled !');
     this.previewGridRef.current?.setState({modalVisible: true});
   };
 
@@ -350,11 +350,13 @@ export class TaskCreate extends React.Component<
   handleTakenPhoto = (takenPhoto: CameraImage) => {
     const formatedTakenPhoto = this.formatTakenPhoto(takenPhoto);
 
+    /* 
     console.log(
       'Taken picture Width x Height',
       formatedTakenPhoto.width,
       formatedTakenPhoto.height,
     );
+    */
 
     this.setState((prevState) => ({
       images: [...(prevState.images ?? []), formatedTakenPhoto],
@@ -396,10 +398,10 @@ export class TaskCreate extends React.Component<
           const storageValue = await AsyncStorage.getItem('@storedTasks');
           let storedTasks: Task[];
           if (storageValue) {
-            console.log('Storage tasks found');
+          // console.log('Storage tasks found');
             storedTasks = JSON.parse(storageValue);
           } else {
-            console.log('No storage tasks found');
+          // console.log('No storage tasks found');
             storedTasks = [];
           }
 
@@ -417,12 +419,12 @@ export class TaskCreate extends React.Component<
           this.clearForm(); // clear the form
         } catch (error) {
           // saving error
-          console.warn('Task save failed', error);
+        // console.warn('Task save failed', error);
         }
         this.setState({loading: false});
       } else console.log('Form not valid');
     } else {
-      console.log('Loading please wait');
+    // console.log('Loading please wait');
     }
   };
 

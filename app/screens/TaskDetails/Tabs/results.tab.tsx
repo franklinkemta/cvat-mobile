@@ -59,14 +59,14 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
 
     // get the initial device orientation
     const initial = Orientation.getInitialOrientation();
-    console.info('Initial device orientation:', initial);
-    console.info('Lock device orientation to portrait');
+  // console.info('Initial device orientation:', initial);
+  // console.info('Lock device orientation to portrait');
     Orientation.lockToPortrait();
     //Orientation.addOrientationListener(this._onOrientationDidChange);
   }
 
   _onOrientationDidChange = (orientation: string) => {
-    console.log('Current device orientation:', orientation);
+  // console.log('Current device orientation:', orientation);
     if (orientation == 'LANDSCAPE-LEFT') {
       //do something with landscape left layout
     } else {
@@ -79,7 +79,7 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
     try {
       if (!this.state.annotationsResults.length) this.handleOnSnapToItem(0);
     } catch (error) {
-      console.log('error loading image on mount', error);
+    // console.log('error loading image on mount', error);
     }
     
   }

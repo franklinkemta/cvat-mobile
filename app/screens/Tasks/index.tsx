@@ -63,23 +63,23 @@ export class Tasks extends React.PureComponent<TasksProps, TasksState> {
   loadTasks = async () => {
     let storedTasks: Task[];
 
-    console.log('Loading tasks from local storage');
+  // console.log('Loading tasks from local storage');
     try {
       const storageValue = await AsyncStorage.getItem('@storedTasks');
       if (storageValue) {
-        console.log('Storage tasks found');
+      // console.log('Storage tasks found');
         storedTasks = JSON.parse(storageValue) || [];
       } else {
-        console.log('No storage tasks found');
+      // console.log('No storage tasks found');
         storedTasks = [];
       }
     } catch (error) {
-      console.log('loading error', error);
+    // console.log('loading error', error);
       storedTasks = [];
     }
 
     // load tasks from storage
-    console.log('Formating task list'); // dummyTasks.map
+  // console.log('Formating task list'); // dummyTasks.map
     const tasks = storedTasks.map((task: any) => ({
       ...task,
       image: getPreviewImage(task.images),
@@ -107,7 +107,7 @@ export class Tasks extends React.PureComponent<TasksProps, TasksState> {
         this.setState({refreshing: false});
       })
       .catch((error: any) => {
-        console.log('loading tasks error', error);
+      // console.log('loading tasks error', error);
         this.setState({refreshing: false});
       });
   };

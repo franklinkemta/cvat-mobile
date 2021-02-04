@@ -67,7 +67,7 @@ export class Camera extends PureComponent<CameraProps, CameraState> {
 
   // return takenPhotos back to the CreateTask view
   backWithTakenPhotos = () => {
-    console.log('Closing camera...');
+  // console.log('Closing camera...');
     const {route, navigation} = this.props;
     navigation.navigate(route.params.previousScreen, {
       takenPhotos: this.state.takenPhotos,
@@ -156,16 +156,16 @@ export class Camera extends PureComponent<CameraProps, CameraState> {
     const {route} = this.props;
     const isDebugMode = route.params.debugMode ?? true;
     if (isDebugMode) {
-      console.warn('DEBUG:', errMsg); // Log to console
+    // console.warn('DEBUG:', errMsg); // Log to console
     }
   }
 
   startDragBBOX(even: any) {
-    console.log('drag start', even);
+  // console.log('drag start', even);
   }
 
   stopDragBBOX(even: any) {
-    console.log('drag stop', even);
+  // console.log('drag stop', even);
   }
 
   render() {

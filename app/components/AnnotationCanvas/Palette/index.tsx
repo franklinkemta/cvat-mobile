@@ -80,7 +80,7 @@ export class Palette extends React.PureComponent<PaletteProps, PaletteState> {
   initSearchPalette = async () => {
     // query the palette list
     if (!this.state.currentPaletteGroups.length) {
-      console.log('init search palette');
+    // console.log('init search palette');
       this.setState({currentPaletteGroups: this.props.paletteGroups});
     }
   };
@@ -91,7 +91,7 @@ export class Palette extends React.PureComponent<PaletteProps, PaletteState> {
   };
 
   clearPaletteFilters = () => {
-    console.log('clear custom palette group');
+  // console.log('clear custom palette group');
     this.setState({
       filterQuery: '',
       currentPaletteGroups: this.props.paletteGroups,

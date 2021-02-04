@@ -16,14 +16,14 @@ export const hasAndroidPermission = async () => {
 // tag, { type, album }
 // https://github.com/react-native-cameraroll/react-native-cameraroll#save
 export const savePicture = async (tag: any, options: any) => {
-  console.log(tag);
+// console.log(tag);
   try {
     if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
       return;
     }
     await CameraRoll.save(tag, options);
-    console.log('save picture sucess ');
+  // console.log('save picture sucess ');
   } catch (error) {
-    console.warn('save picture error ', error);
+  // console.warn('save picture error ', error);
   }
 };
