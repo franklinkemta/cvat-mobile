@@ -1,8 +1,7 @@
 import React, {createRef} from 'react';
-import {Image, Modal, ScrollView, View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 
 import {
-  useTheme,
   Paragraph,
   Caption,
   TextInput,
@@ -413,9 +412,9 @@ export class TaskCreate extends React.Component<
           );
 
           this.clearForm(); // clear the form
-        } catch (e) {
+        } catch (error) {
           // saving error
-          console.warn('Task save failed', e);
+          console.warn('Task save failed', error);
         }
         this.setState({loading: false});
       } else console.log('Form not valid');

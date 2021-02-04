@@ -85,14 +85,8 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
   }
 
   handleOnSnapToItem(listImageIndex: number) {
-    // update listImageIndex
-    // console.log('index', listImageIndex);
-
     // load and display the annotations corresponding to the current activeIndex
     const currentImage: TaskImage = this.taskImages[listImageIndex];
-
-    // console.log(currentImage);
-    // update the annotations list
 
     // console.log('TaskImages', this.taskImages);
     const annotations: any[] = currentImage.annotations || [];
@@ -108,16 +102,11 @@ export class ResultTab extends React.Component<ResultTabProps, ResultTabState> {
       };
     });
 
-    // console.log(annotationsResults);
-
     this.setState({
       annotationsResults: annotationsResults.filter(
         (result) => result.labels.length > 0,
       ), // Do not show empty category
     });
-    // Todo : Test annotations before assigning to the state.annotations
-
-    // console.log(this.state.annotations);
   }
 
   handleListItemPress() {

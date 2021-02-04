@@ -1,6 +1,12 @@
 import React, {useState} from 'react';
 import {ScrollView, StyleSheet, Text, View, Modal} from 'react-native';
-import {DataTable, Paragraph, Caption, Appbar} from 'react-native-paper';
+import {
+  DataTable,
+  Paragraph,
+  Caption,
+  Appbar,
+  Button,
+} from 'react-native-paper';
 
 // import our custom preview grid package
 import PreviewGrid from 'react-native-preview-images';
@@ -10,18 +16,20 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import {theme} from '/theme';
 
 // import utils
-import {formatImagesSources} from '/utils';
+import {alertMessage, formatImagesSources} from '/utils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type InfoTabProps = {
   route: any;
   navigation?: any;
 };
 
-export const InfoTab = (props: InfoTabProps) => {
-  const task: Task = props.route.params;
+export const InfoTab = ({route, navigation}: InfoTabProps) => {
+  const task: Task = route.params;
 
   const [listImageIndex, setListImageIndex] = useState(0);
   const [imgViewModal, setImgViewModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // const previewGridRef = createRef<PreviewGrid>(); // The ref to manipulate parent GridView from its child components
 
@@ -52,6 +60,65 @@ export const InfoTab = (props: InfoTabProps) => {
         <Appbar.BackAction onPress={() => setImgViewModal(false)} />
         <Appbar.Content title={_galleryTitle(currentIndex)} />
       </Appbar>
+    );
+  };
+
+  // delete the task from local storage
+  const deleteCurrentTask = async () => {
+    if (!loading) {
+      const deletedTask: Task = task;
+      try {
+        // get the stored tasks list // Todo: Store on the server
+        const storageValue = await AsyncStorage.getItem('@storedTasks');
+        let storedTasks: Task[];
+        if (storageValue) {
+          console.log('Loading task from storage');
+          storedTasks = JSON.parse(storageValue);
+        } else {
+          console.log('No storage tasks found');
+          storedTasks = [];
+        }
+
+        // remove the task from the stored task list and save
+        const jsonValueOfStoredTasks = JSON.stringify(
+          storedTasks.filter((storedTask) => storedTask.id != deletedTask.id),
+        );
+
+        // update the storage // adding the new task
+        await AsyncStorage.setItem('@storedTasks', jsonValueOfStoredTasks);
+
+        alertMessage(
+          'Task deleted',
+          'Sucessfuly deleted the task:  ' + deletedTask.name,
+          [],
+          'warn',
+        );
+        // navigate back the task list
+        navigation.goBack();
+      } catch (error) {
+        // saving error
+        console.warn('Task deletion failed', error);
+      }
+      setLoading(false);
+    } else {
+      console.log('Loading please wait..');
+    }
+  };
+
+  // Delete the task from local storage
+  const _handleOnDelete = () => {
+    alertMessage(
+      'Are you sure you want to delete?',
+      'This will delete the entire task data, images and annotations from your local storage',
+      [
+        {
+          text: 'Yes, Delete',
+          onPress: deleteCurrentTask,
+        },
+        {
+          text: 'Cancel',
+        },
+      ],
     );
   };
 
@@ -194,6 +261,17 @@ export const InfoTab = (props: InfoTabProps) => {
           setImgViewModal(true);
         }}
         images={formatImagesSources(task.images)}></PreviewGrid>
+      <View style={styles.deleteButtonContainer}>
+        <Button
+          style={styles.deleteButton}
+          color={theme.colors.surface}
+          loading={loading}
+          icon="delete"
+          mode="contained"
+          onPress={_handleOnDelete}>
+          Delete task
+        </Button>
+      </View>
       <View style={styles.modalView}>
         <Modal
           visible={imgViewModal}
@@ -259,4 +337,12 @@ const styles = StyleSheet.create({
     zIndex: 1,
     backgroundColor: theme.colors.transparent,
   },
+  deleteButtonContainer: {
+    flex: 1,
+    marginBottom: 20,
+    marginTop: 10,
+    borderBottomWidth: theme.borderDefault,
+    borderBottomColor: theme.colors.danger,
+  },
+  deleteButton: {flex: 1},
 });
