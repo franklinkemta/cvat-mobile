@@ -10,9 +10,9 @@ https://github.com/franklinkemta/cvat-firebase
 # Setup instructions
 - clone the repo
 - yarn or npm install
-to run on android, setup android studio on your PC, connect an android device and
+- To run on android, setup android studio on your PC, connect an android device and
 - yarn android
-to run on ios, setup Xcode on a mac, connect an ios device and
+- to run on ios, setup Xcode on a mac, connect an ios device and
 - yarn ios
 
 # Usage
