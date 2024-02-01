@@ -1,9 +1,9 @@
 ### cvat-mobile
-CVAT Mobile version in React Native, Typescript
 
 This is a Mobile version of the openvino computer vision annotation tool kit (CVAT) adapted for vehicles annotation
 Visit https://github.com/openvinotoolkit/cvat
 
+Langages: React Native, Typescript
 I also made a firebase adaptation of CVAT for firebase here
 https://github.com/franklinkemta/cvat-firebase
 
